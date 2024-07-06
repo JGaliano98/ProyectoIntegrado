@@ -23,6 +23,12 @@ class Resena
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $fecha = null;
 
+    #[ORM\ManyToOne(inversedBy: 'resenas')]
+    private ?producto $producto = null;
+
+    #[ORM\ManyToOne(inversedBy: 'resenas')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +66,30 @@ class Resena
     public function setFecha(\DateTimeInterface $fecha): static
     {
         $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    public function getProducto(): ?producto
+    {
+        return $this->producto;
+    }
+
+    public function setProducto(?producto $producto): static
+    {
+        $this->producto = $producto;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

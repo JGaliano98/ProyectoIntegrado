@@ -37,6 +37,12 @@ class Direccion
     #[ORM\Column(length: 255)]
     private ?string $pais = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Pedido $pedido = null;
+
+    #[ORM\ManyToOne(inversedBy: 'direccions')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -134,6 +140,30 @@ class Direccion
     public function setPais(string $pais): static
     {
         $this->pais = $pais;
+
+        return $this;
+    }
+
+    public function getPedido(): ?Pedido
+    {
+        return $this->pedido;
+    }
+
+    public function setPedido(?Pedido $pedido): static
+    {
+        $this->pedido = $pedido;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

@@ -29,6 +29,12 @@ class DetallePedido
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
     private ?string $precio_producto = null;
 
+    #[ORM\ManyToOne(inversedBy: 'detallePedidos')]
+    private ?Producto $producto = null;
+
+    #[ORM\ManyToOne(inversedBy: 'detallePedidos')]
+    private ?Pedido $pedido = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +96,30 @@ class DetallePedido
     public function setPrecioProducto(string $precio_producto): static
     {
         $this->precio_producto = $precio_producto;
+
+        return $this;
+    }
+
+    public function getProducto(): ?Producto
+    {
+        return $this->producto;
+    }
+
+    public function setProducto(?Producto $producto): static
+    {
+        $this->producto = $producto;
+
+        return $this;
+    }
+
+    public function getPedido(): ?Pedido
+    {
+        return $this->pedido;
+    }
+
+    public function setPedido(?Pedido $pedido): static
+    {
+        $this->pedido = $pedido;
 
         return $this;
     }

@@ -19,6 +19,9 @@ class MetodoPago
     #[ORM\Column(length: 255)]
     private ?string $detalles = null;
 
+    #[ORM\ManyToOne(inversedBy: 'metodoPagos')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class MetodoPago
     public function setDetalles(string $detalles): static
     {
         $this->detalles = $detalles;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

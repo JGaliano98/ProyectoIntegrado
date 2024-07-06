@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PedidoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -52,6 +54,23 @@ class Pedido
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $otra_info_direccion = null;
+
+    /**
+     * @var Collection<int, DetallePedido>
+     */
+    #[ORM\OneToMany(targetEntity: DetallePedido::class, mappedBy: 'pedido')]
+    private Collection $detallePedidos;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Direccion $direccion = null;
+
+    #[ORM\ManyToOne(inversedBy: 'pedidos')]
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->detallePedidos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -210,6 +229,60 @@ class Pedido
     public function setOtraInfoDireccion(?string $otra_info_direccion): static
     {
         $this->otra_info_direccion = $otra_info_direccion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DetallePedido>
+     */
+    public function getDetallePedidos(): Collection
+    {
+        return $this->detallePedidos;
+    }
+
+    public function addDetallePedido(DetallePedido $detallePedido): static
+    {
+        if (!$this->detallePedidos->contains($detallePedido)) {
+            $this->detallePedidos->add($detallePedido);
+            $detallePedido->setPedido($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetallePedido(DetallePedido $detallePedido): static
+    {
+        if ($this->detallePedidos->removeElement($detallePedido)) {
+            // set the owning side to null (unless already changed)
+            if ($detallePedido->getPedido() === $this) {
+                $detallePedido->setPedido(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDireccion(): ?Direccion
+    {
+        return $this->direccion;
+    }
+
+    public function setDireccion(?Direccion $direccion): static
+    {
+        $this->direccion = $direccion;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

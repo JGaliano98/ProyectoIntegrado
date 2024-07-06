@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +36,27 @@ class Producto
 
     #[ORM\Column(length: 255)]
     private ?string $foto = null;
+
+    #[ORM\ManyToOne(inversedBy: 'productos')]
+    private ?categoria $categoria = null;
+
+    /**
+     * @var Collection<int, Resena>
+     */
+    #[ORM\OneToMany(targetEntity: Resena::class, mappedBy: 'producto')]
+    private Collection $resenas;
+
+    /**
+     * @var Collection<int, DetallePedido>
+     */
+    #[ORM\OneToMany(targetEntity: DetallePedido::class, mappedBy: 'producto')]
+    private Collection $detallePedidos;
+
+    public function __construct()
+    {
+        $this->resenas = new ArrayCollection();
+        $this->detallePedidos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +143,78 @@ class Producto
     public function setFoto(string $foto): static
     {
         $this->foto = $foto;
+
+        return $this;
+    }
+
+    public function getCategoria(): ?categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?categoria $categoria): static
+    {
+        $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Resena>
+     */
+    public function getResenas(): Collection
+    {
+        return $this->resenas;
+    }
+
+    public function addResena(Resena $resena): static
+    {
+        if (!$this->resenas->contains($resena)) {
+            $this->resenas->add($resena);
+            $resena->setProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResena(Resena $resena): static
+    {
+        if ($this->resenas->removeElement($resena)) {
+            // set the owning side to null (unless already changed)
+            if ($resena->getProducto() === $this) {
+                $resena->setProducto(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DetallePedido>
+     */
+    public function getDetallePedidos(): Collection
+    {
+        return $this->detallePedidos;
+    }
+
+    public function addDetallePedido(DetallePedido $detallePedido): static
+    {
+        if (!$this->detallePedidos->contains($detallePedido)) {
+            $this->detallePedidos->add($detallePedido);
+            $detallePedido->setProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetallePedido(DetallePedido $detallePedido): static
+    {
+        if ($this->detallePedidos->removeElement($detallePedido)) {
+            // set the owning side to null (unless already changed)
+            if ($detallePedido->getProducto() === $this) {
+                $detallePedido->setProducto(null);
+            }
+        }
 
         return $this;
     }

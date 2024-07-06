@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -42,6 +44,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?int $telefono = null;
+
+    /**
+     * @var Collection<int, Resena>
+     */
+    #[ORM\OneToMany(targetEntity: Resena::class, mappedBy: 'user')]
+    private Collection $resenas;
+
+    /**
+     * @var Collection<int, MetodoPago>
+     */
+    #[ORM\OneToMany(targetEntity: MetodoPago::class, mappedBy: 'user')]
+    private Collection $metodoPagos;
+
+    /**
+     * @var Collection<int, Pedido>
+     */
+    #[ORM\OneToMany(targetEntity: Pedido::class, mappedBy: 'user')]
+    private Collection $pedidos;
+
+    /**
+     * @var Collection<int, Direccion>
+     */
+    #[ORM\OneToMany(targetEntity: Direccion::class, mappedBy: 'user')]
+    private Collection $direccions;
+
+    public function __construct()
+    {
+        $this->resenas = new ArrayCollection();
+        $this->metodoPagos = new ArrayCollection();
+        $this->pedidos = new ArrayCollection();
+        $this->direccions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -162,6 +196,126 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTelefono(int $telefono): static
     {
         $this->telefono = $telefono;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Resena>
+     */
+    public function getResenas(): Collection
+    {
+        return $this->resenas;
+    }
+
+    public function addResena(Resena $resena): static
+    {
+        if (!$this->resenas->contains($resena)) {
+            $this->resenas->add($resena);
+            $resena->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResena(Resena $resena): static
+    {
+        if ($this->resenas->removeElement($resena)) {
+            // set the owning side to null (unless already changed)
+            if ($resena->getUser() === $this) {
+                $resena->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MetodoPago>
+     */
+    public function getMetodoPagos(): Collection
+    {
+        return $this->metodoPagos;
+    }
+
+    public function addMetodoPago(MetodoPago $metodoPago): static
+    {
+        if (!$this->metodoPagos->contains($metodoPago)) {
+            $this->metodoPagos->add($metodoPago);
+            $metodoPago->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMetodoPago(MetodoPago $metodoPago): static
+    {
+        if ($this->metodoPagos->removeElement($metodoPago)) {
+            // set the owning side to null (unless already changed)
+            if ($metodoPago->getUser() === $this) {
+                $metodoPago->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pedido>
+     */
+    public function getPedidos(): Collection
+    {
+        return $this->pedidos;
+    }
+
+    public function addPedido(Pedido $pedido): static
+    {
+        if (!$this->pedidos->contains($pedido)) {
+            $this->pedidos->add($pedido);
+            $pedido->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePedido(Pedido $pedido): static
+    {
+        if ($this->pedidos->removeElement($pedido)) {
+            // set the owning side to null (unless already changed)
+            if ($pedido->getUser() === $this) {
+                $pedido->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Direccion>
+     */
+    public function getDireccions(): Collection
+    {
+        return $this->direccions;
+    }
+
+    public function addDireccion(Direccion $direccion): static
+    {
+        if (!$this->direccions->contains($direccion)) {
+            $this->direccions->add($direccion);
+            $direccion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDireccion(Direccion $direccion): static
+    {
+        if ($this->direccions->removeElement($direccion)) {
+            // set the owning side to null (unless already changed)
+            if ($direccion->getUser() === $this) {
+                $direccion->setUser(null);
+            }
+        }
 
         return $this;
     }
