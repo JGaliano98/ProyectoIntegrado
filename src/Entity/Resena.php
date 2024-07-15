@@ -24,7 +24,7 @@ class Resena
     private ?\DateTimeInterface $fecha = null;
 
     #[ORM\ManyToOne(inversedBy: 'resenas')]
-    private ?producto $producto = null;
+    private ?Producto $producto = null;
 
     #[ORM\ManyToOne(inversedBy: 'resenas')]
     private ?User $user = null;
@@ -70,12 +70,12 @@ class Resena
         return $this;
     }
 
-    public function getProducto(): ?producto
+    public function getProducto(): ?Producto
     {
         return $this->producto;
     }
 
-    public function setProducto(?producto $producto): static
+    public function setProducto(?Producto $producto): static
     {
         $this->producto = $producto;
 

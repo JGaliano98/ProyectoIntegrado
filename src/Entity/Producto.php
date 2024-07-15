@@ -38,7 +38,7 @@ class Producto
     private ?string $foto = null;
 
     #[ORM\ManyToOne(inversedBy: 'productos')]
-    private ?categoria $categoria = null;
+    private ?Categoria $categoria = null;
 
     /**
      * @var Collection<int, Resena>
@@ -152,7 +152,7 @@ class Producto
         return $this->categoria;
     }
 
-    public function setCategoria(?categoria $categoria): static
+    public function setCategoria(?Categoria $categoria): static
     {
         $this->categoria = $categoria;
 
