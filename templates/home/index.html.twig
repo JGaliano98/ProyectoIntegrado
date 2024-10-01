@@ -1,0 +1,57 @@
+{# templates/home/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Página de Inicio - Carnicería Hnos Galiano{% endblock %}
+
+{% block content %}
+<div class="carousel">
+    <div class="carousel-container">
+        {% for image in images %}
+            <div class="carousel-slide">
+                <img src="{{ asset(image) }}" alt="Carrusel Imagen">
+            </div>
+        {% endfor %}
+    </div>
+    <!-- Controles para navegar -->
+    <a class="carousel-prev" onclick="prevSlide()">&#10094;</a>
+    <a class="carousel-next" onclick="nextSlide()">&#10095;</a>
+
+    <!-- Indicadores de puntos -->
+    <div class="carousel-dots">
+        {% for i in 1..images|length %}
+            <span class="dot" onclick="currentSlide({{ i }})"></span>
+        {% endfor %}
+    </div>
+</div>
+
+<main>
+    <h2>Nuestros Productos Destacados</h2>
+    <div class="section-content">
+        <div>
+            <h3>Carnes Rojas</h3>
+            <p>Ofrecemos una amplia variedad de carnes rojas seleccionadas para ti.</p>
+        </div>
+        <div>
+            <h3>Embutidos</h3>
+            <p>Descubre nuestros embutidos artesanales de la mejor calidad.</p>
+        </div>
+        <div>
+            <h3>Especialidades</h3>
+            <p>Prueba nuestras especialidades únicas y frescas cada día.</p>
+        </div>
+    </div>
+
+    <!-- Contenedor para los botones centrados -->
+    <div class="button-container">
+        <a href="#" class="button">Explora Nuestros Productos</a>
+        <a href="{{ path('admin') }}" class="button">Ir al Panel de Administración</a>
+    </div>
+</main>
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="{{ asset('js/carousel.js') }}"></script>
+{% endblock %}
+

@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block content %}
+    <h1>Tu Carrito de Compras</h1>
+
+    {# Mostrar mensajes de error #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if carrito is empty %}
+        <p>Tu carrito está vacío.</p>
+    {% else %}
+        <table class="carrito-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="carrito-body">
+                {% set totalCarrito = 0 %}
+                {% for item in carrito %}
+                    {% set totalProducto = (item.producto.precio * item.cantidad) / 100 %}
+                    {% set totalCarrito = totalCarrito + totalProducto %}
+                    <tr id="producto-{{ item.producto.id }}">
+                        <td>{{ item.producto.nombre }}</td>
+                        <td>
+                            <a href="#" data-id="{{ item.producto.id }}" class="button decrement">-</a>
+                            <span class="cantidad">{{ item.cantidad }}</span>
+                            <a href="#" data-id="{{ item.producto.id }}" class="button increment">+</a>
+                        </td>
+                        <td>€{{ (item.producto.precio / 100) | number_format(2, '.', ',') }}</td>
+                        <td class="total-producto">€{{ totalProducto | number_format(2, '.', ',') }}</td>
+                        <td>
+                            <a href="{{ path('carrito_remove', { id: item.producto.id }) }}" class="button">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Total del Carrito:</strong></td>
+                    <td colspan="2" id="total-carrito">€{{ totalCarrito | number_format(2, '.', ',') }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Botón para realizar pedido -->
+        <div class="realizar-pedido-container">
+            <a href="{{ path('resumen_pedido') }}" class="button realizar-pedido">Realizar Pedido</a>
+        </div>
+
+
+
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+<script>
+    document.querySelectorAll('.increment').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            let productId = this.getAttribute('data-id');
+
+            fetch(`/carrito/increment/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector(`#producto-${productId} .cantidad`).innerText = data.cantidad;
+                    document.querySelector(`#producto-${productId} .total-producto`).innerText = `€${data.totalProducto}`;
+                    document.querySelector('#total-carrito').innerText = `€${data.totalCarrito}`;
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll('.decrement').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            let productId = this.getAttribute('data-id');
+
+            fetch(`/carrito/decrement/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.cantidad === 0) {
+                        document.querySelector(`#producto-${productId}`).remove();
+                    } else {
+                        document.querySelector(`#producto-${productId} .cantidad`).innerText = data.cantidad;
+                        document.querySelector(`#producto-${productId} .total-producto`).innerText = `€${data.totalProducto}`;
+                    }
+                    document.querySelector('#total-carrito').innerText = `€${data.totalCarrito}`;
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

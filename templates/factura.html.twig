@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .footer {
+            font-size: 10px;
+            color: #777;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Factura de Compra</div>
+
+    <div class="content">
+        <p><strong>Nombre del Cliente:</strong> {{ usuario.nombre }}</p>
+        <p><strong>Dirección de Envío:</strong> {{ direccion.calle }}, {{ direccion.numero }}, {{ direccion.localidad }}, {{ direccion.codigoPostal }}, {{ direccion.provincia }}</p>
+        <p><strong>Fecha del Pedido:</strong> {{ fecha|date('d/m/Y') }}</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set totalCarrito = 0 %}
+                {% for item in carrito %}
+                    {% set totalProducto = (item.producto.precio * item.cantidad) / 100 %}
+                    {% set totalCarrito = totalCarrito + totalProducto %}
+                    <tr>
+                        <td>{{ item.producto.nombre }}</td>
+                        <td>{{ item.cantidad }}</td>
+                        <td>€{{ (item.producto.precio / 100) | number_format(2, '.', ',') }}</td>
+                        <td>€{{ totalProducto | number_format(2, '.', ',') }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3"><strong>Total del Pedido</strong></td>
+                    <td>€{{ totalCarrito | number_format(2, '.', ',') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">Gracias por su compra. Esta es una factura generada automáticamente.</div>
+</body>
+</html>

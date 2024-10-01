@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\User;
@@ -31,6 +30,13 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Asignamos los nuevos campos personalizados
+            $user->setNombre($form->get('nombre')->getData());
+            $user->setApellido1($form->get('apellido1')->getData());
+            $user->setApellido2($form->get('apellido2')->getData());
+            $user->setTelefono($form->get('telefono')->getData());
+
+            // Hash de la contraseña
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -42,6 +48,7 @@ class RegistrationController extends AbstractController
             $activationToken = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
             $user->setActivationToken($activationToken);
 
+            // Guardamos el nuevo usuario
             $entityManager->persist($user);
             $entityManager->flush();
 

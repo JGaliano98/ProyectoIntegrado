@@ -26,3 +26,8 @@ services:
     App\Security\UserChecker:
         tags:
             - { name: security.user_checker, firewall: main }
+
+
+    App\EventListener\OrderPlacedListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'order.placed', method: 'onOrderPlaced' }

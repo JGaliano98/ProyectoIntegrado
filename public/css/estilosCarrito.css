@@ -1,0 +1,65 @@
+
+/* Estilos de la tabla del carrito */
+.carrito-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.carrito-table th, .carrito-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.carrito-table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.carrito-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.carrito-table td .button {
+    margin: 0 5px;
+}
+
+/* Botón de realizar pedido */
+.realizar-pedido-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.realizar-pedido {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.realizar-pedido:hover {
+    background-color: #45a049;
+}
+
+/* Estilos para los mensajes de error */
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #eed3d7;
+    border-radius: 4px;
+    color: #b94a48;
+    background-color: #f2dede;
+}
+
+.imagen-carrito {
+    width: 10px; /* Ajusta el ancho de la imagen */
+    height: auto; /* Mantener la proporción */
+    border-radius: 5px; /* Añadir un borde redondeado, opcional */
+    margin-right: 10px;
+}

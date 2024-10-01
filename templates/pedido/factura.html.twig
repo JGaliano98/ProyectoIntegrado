@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura de Compra</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            font-size: 14px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .factura-detalles {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .factura-detalles th, .factura-detalles td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .factura-detalles th {
+            background-color: #f4f4f4;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Factura de Compra</h1>
+
+    <p><strong>Fecha de Compra:</strong> {{ "now"|date("d-m-Y H:i") }}</p>
+    <p><strong>Nombre del Cliente:</strong> {{ app.user.nombre }} {{ app.user.apellido1 }} {{ app.user.apellido2 }}</p>
+    <p><strong>Email del Cliente:</strong> {{ app.user.email }}</p>
+
+    <h2>Detalles del Pedido</h2>
+
+    <table class="factura-detalles">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set totalCarrito = 0 %}
+            {% for item in carrito %}
+                {% set totalProducto = (item.producto.precio * item.cantidad) / 100 %}
+                {% set totalCarrito = totalCarrito + totalProducto %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>€{{ (item.producto.precio / 100) | number_format(2, '.', ',') }}</td>
+                    <td>€{{ totalProducto | number_format(2, '.', ',') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="total">Total del Pedido: €{{ totalCarrito | number_format(2, '.', ',') }}</p>
+
+</body>
+</html>

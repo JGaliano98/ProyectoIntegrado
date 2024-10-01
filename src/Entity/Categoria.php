@@ -24,7 +24,7 @@ class Categoria
     /**
      * @var Collection<int, Producto>
      */
-    #[ORM\OneToMany(targetEntity: Producto::class, mappedBy: 'Categoria')]
+    #[ORM\OneToMany(targetEntity: Producto::class, mappedBy: 'categoria')]
     private Collection $productos;
 
     public function __construct()
@@ -89,5 +89,10 @@ class Categoria
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->Nombre; 
     }
 }

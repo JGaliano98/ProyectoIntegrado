@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmación de Pedido{% endblock %}
+
+{% block content %}
+    <h1>Confirmación de Pedido</h1>
+    <p>Tu pedido ha sido realizado con éxito. Recibirás un correo electrónico con los detalles de tu compra y una copia de la factura adjunta.</p>
+    <p>¡Gracias por tu compra!</p>
+    
+    <a href="{{ path('descargar_pdf') }}" class="button">Descargar Factura</a>
+{% endblock %}
