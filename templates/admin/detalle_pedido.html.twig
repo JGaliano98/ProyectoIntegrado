@@ -1,0 +1,58 @@
+<div class="detalle-pedido-contenedor">
+    <table class="detalle-pedido-tabla">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set totalPedido = 0 %}
+            {% for detalle in field.value %}
+                {% set totalPedido = totalPedido + detalle.precio %}
+                <tr>
+                    <td>{{ detalle.nombreProducto }}</td>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>{{ (detalle.precioProducto / 100) | number_format(2, '.', ',') }}€</td>
+                    <td>{{ (detalle.precio) | number_format(2, '.', ',') }}€</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No hay detalles de pedido disponibles.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="total-pedido">
+        <h4>Total del Pedido: {{ (totalPedido) | number_format(2, '.', ',') }}€</h4>
+    </div>
+</div>
+
+<style>
+    .detalle-pedido-contenedor {
+        margin-top: 20px;
+    }
+    .detalle-pedido-tabla {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .detalle-pedido-tabla th, .detalle-pedido-tabla td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    .detalle-pedido-tabla th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+    .detalle-pedido-tabla td {
+        background-color: #fff;
+    }
+    .total-pedido {
+        text-align: right;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>

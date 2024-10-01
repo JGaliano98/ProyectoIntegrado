@@ -1,0 +1,62 @@
+/* Estilo principal de la página de confirmación */
+.confirmation-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+/* Estilo para el encabezado */
+.confirmation-header h1 {
+    color: #000000;
+    font-size: 2.2em;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el mensaje de confirmación */
+.confirmation-message p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Información adicional sobre el pago */
+.payment-info p {
+    font-size: 1em;
+    color: #333;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Mensaje de agradecimiento */
+.thank-you-message p {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+}
+
+/* Botón para descargar la factura */
+.download-invoice .download-button {
+    display: inline-block;
+    background-color: #982e2e;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.download-invoice .download-button:hover {
+    background-color: #ed3e3e;
+}
+
+/* Espaciado para mejorar la lectura */
+.confirmation-container p {
+    margin: 15px 0;
+}

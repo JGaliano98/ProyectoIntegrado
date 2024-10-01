@@ -9,9 +9,31 @@
             margin: 20px;
             padding: 0;
             font-size: 14px;
+            line-height: 1.6;
         }
-        h1 {
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            width: 150px;
+        }
+        .factura-titulo {
             text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .cliente-detalles {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .cliente-detalles p {
+            margin: 5px 0;
         }
         .factura-detalles {
             margin-top: 20px;
@@ -20,7 +42,7 @@
         }
         .factura-detalles th, .factura-detalles td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 10px;
             text-align: center;
         }
         .factura-detalles th {
@@ -35,11 +57,24 @@
 </head>
 <body>
 
-    <h1>Factura de Compra</h1>
+    <div class="header">
+        <div class="logo">
+            <img src="{{ absolute_url(asset('images/carniceria.jpg')) }}" alt="Logo Empresa" class="logo">
+        </div>
+        <h1 class="factura-titulo">Factura de Compra</h1>
+    </div>
 
-    <p><strong>Fecha de Compra:</strong> {{ "now"|date("d-m-Y H:i") }}</p>
-    <p><strong>Nombre del Cliente:</strong> {{ app.user.nombre }} {{ app.user.apellido1 }} {{ app.user.apellido2 }}</p>
-    <p><strong>Email del Cliente:</strong> {{ app.user.email }}</p>
+    <div class="cliente-detalles">
+        <p><strong>Fecha de Compra:</strong> {{ "now"|date("d-m-Y H:i") }}</p>
+        <p><strong>Nombre del Cliente:</strong> {{ app.user.nombre }} {{ app.user.apellido1 }} {{ app.user.apellido2 }}</p>
+        <p><strong>Email del Cliente:</strong> {{ app.user.email }}</p>
+        <p><strong>Dirección de Envío:</strong> 
+            {{ direccion.calle }}, {{ direccion.numero }}
+            {% if direccion.letra is not empty %}{{ direccion.letra }}{% endif %},
+            {{ direccion.localidad }}, {{ direccion.codigoPostal }},
+            {{ direccion.provincia }}, {{ direccion.pais }}
+        </p>
+    </div>
 
     <h2>Detalles del Pedido</h2>
 

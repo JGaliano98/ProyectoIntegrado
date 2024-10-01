@@ -286,4 +286,34 @@ class Pedido
 
         return $this;
     }
+
+
+
+    public function getDireccionCompleta(): string
+{
+    return sprintf(
+        '%s, %s, %s, %s, %s, %s, %s',
+        $this->getCalleDireccion(),
+        $this->getNumeroDireccion(),
+        $this->getLocalidadDireccion(),
+        $this->getProvinciaDireccion(),
+        $this->getCodigoPostalDireccion(),
+        $this->getPaisDireccion(),
+        $this->getOtraInfoDireccion() ?? ''
+    );
 }
+
+public function getNombreCompletoUsuario(): string
+{
+    $user = $this->getUser();
+    if ($user) {
+        return sprintf('%s %s %s', $user->getNombre(), $user->getApellido1(), $user->getApellido2());
+    }
+    return '';
+}
+
+
+
+}
+
+

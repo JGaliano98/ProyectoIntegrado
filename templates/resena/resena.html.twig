@@ -1,0 +1,46 @@
+<form id="review-form">
+    <input type="hidden" id="producto_id" value="{{ producto.id }}">
+    <label for="puntuacion">Puntuación:</label>
+    <input type="number" id="puntuacion" min="1" max="5" required>
+    <label for="comentario">Comentario:</label>
+    <textarea id="comentario" required></textarea>
+    <button type="submit">Enviar Reseña</button>
+</form>
+
+<div id="response-message"></div>
+
+<script>
+document.getElementById('review-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const productoId = document.getElementById('producto_id').value;
+    const puntuacion = document.getElementById('puntuacion').value;
+    const comentario = document.getElementById('comentario').value;
+
+    fetch('/api/resena', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+            producto_id: productoId,
+            puntuacion: puntuacion,
+            comentario: comentario
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const responseMessage = document.getElementById('response-message');
+        if (data.success) {
+            responseMessage.innerHTML = `<p class="alert alert-success">${data.message}</p>`;
+        } else {
+            responseMessage.innerHTML = `<p class="alert alert-danger">${data.message}</p>`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('response-message').innerHTML = '<p class="alert alert-danger">Hubo un error enviando la reseña.</p>';
+    });
+});
+</script>
