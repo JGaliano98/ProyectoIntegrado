@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Pedido;
 use App\Entity\DetallePedido;
+use App\Entity\User;
+use App\Service\EmailService;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -84,21 +86,32 @@ class PedidoCrudController extends AbstractCrudController
 }
 
 
-    #[Route('/admin/pedido/procesar/{id}', name: 'admin_pedido_procesar', methods: ['GET', 'POST'])]
-    public function procesarPedido(int $id): Response
-    {
-        $pedido = $this->entityManager->getRepository(Pedido::class)->find($id);
+#[Route('/pedido/{id}/procesar', name: 'admin_pedido_procesar')]
+public function procesarPedido(int $id, EntityManagerInterface $entityManager, EmailService $emailService): Response
+{
+    // Obtener el pedido por su ID
+    $pedido = $entityManager->getRepository(Pedido::class)->find($id);
 
-        if (!$pedido) {
-            $this->addFlash('error', 'Pedido no encontrado.');
-            return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction(Crud::PAGE_INDEX)->generateUrl());
-        }
-
-        $pedido->setEstado('procesado');
-        $this->entityManager->flush();
-
-        $this->addFlash('success', 'El pedido ha sido procesado con éxito.');
-
-        return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction(Crud::PAGE_INDEX)->generateUrl());
+    if (!$pedido) {
+        $this->addFlash('error', 'El pedido no existe.');
+        return $this->redirectToRoute('admin');
     }
+
+    // Cambiar el estado del pedido a 'procesado'
+    $pedido->setEstado('procesado');
+    $entityManager->flush();
+
+    // Enviar el correo de confirmación de envío al usuario
+    $user = $pedido->getUser();
+    if ($user instanceof User) {
+        $emailService->sendOrderProcessed($user->getEmail(), $user->getNombre());
+    }
+
+    $this->addFlash('success', 'El pedido ha sido procesado correctamente y el usuario ha sido notificado.');
+    return $this->redirectToRoute('admin', [
+        'crudAction' => 'index',
+        'crudControllerFqcn' => PedidoCrudController::class,
+    ]);
+}
+
 }
