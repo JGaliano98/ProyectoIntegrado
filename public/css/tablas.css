@@ -1,0 +1,87 @@
+#modalTable {
+    width: 100%;  /* Asegura que la tabla use todo el ancho del modal */
+    table-layout: fixed;  /* Ayuda a manejar el ancho de las columnas de manera más consistente */
+}
+
+#modalTable th, #modalTable td {
+    overflow: hidden;  /* Evita desbordamientos de texto */
+    text-overflow: ellipsis;  /* Añade puntos suspensivos si el texto es demasiado largo */
+    white-space: nowrap;  /* Evita que el texto se divida en múltiples líneas */
+}
+
+/* Reducir el tamaño de fuente para los nombres y apellidos en la tabla */
+#modalTable th, #modalTable td {
+    font-size: 0.85em; 
+}
+
+/* Específicamente para nombres */
+#modalTable th:nth-child(2), #modalTable td:nth-child(2) {
+    font-size: 0.75em; /* Más pequeño aún para los nombres */
+}
+
+/* Si necesitas más ajustes específicos */
+.modal-title {
+    font-size: 1em; /* Tamaño del título del modal */
+}
+
+.modal-body {
+    font-size: 0.9em; /* Tamaño general del texto en el cuerpo del modal */
+}
+
+/* Ajustar el tamaño y la posición del input de tipo file */
+/* Estilos para el contenedor */
+.file-upload-container {
+    display: flex; /* Establece el contenedor como un flexbox */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center; /* Alinea los elementos verticalmente en el centro */
+    width: 100%; /* Opcional: Ajusta el ancho según necesites */
+    margin: 20px 0; /* Espacio vertical para el contenedor */
+}
+
+/* Estilos para el input de tipo file */
+#csvFileInput {
+    max-width: 600px; /* Ancho máximo del input */
+    width: 100%; /* Toma todo el ancho posible hasta 300px */
+    margin-right: 10px; /* Añade espacio a la derecha del input */
+}
+
+/* Estilos para el botón de carga */
+#loadDataButton {
+    width: auto; /* Permite que el botón ajuste su ancho al contenido */
+    padding: 6px 12px; /* Ajuste para que el botón tenga un tamaño adecuado */
+}
+
+
+/* Estilos para los botones */
+.botonBorrar,
+.botonEditar,
+.botonGuardar,
+.botonCancelar {
+    width: 30px; /* Ancho deseado */
+    height: 30px; /* Alto deseado */
+    margin-right: 50px; /* Añadir un margen derecho de 5px */
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: transparent;
+    border: none;
+    padding: 0; /* Eliminar el relleno para que el tamaño sea solo del icono */
+    cursor: pointer;
+}
+
+/* Estilos para los botones de los iconos específicos */
+.botonBorrar {
+    background-image: url('../images/borrar.png');
+    
+}
+
+.botonEditar {
+    background-image: url('../images/editar.png');
+}
+
+.botonGuardar {
+    background-image: url('../images/guardar.png');
+}
+
+.botonCancelar {
+    background-image: url('../images/cancelar.png');
+}

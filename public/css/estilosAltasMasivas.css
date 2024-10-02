@@ -1,0 +1,14 @@
+.recursos{
+    width: 150px;
+}
+.botonGuardar, .botonCancelar{
+    display:none;
+}
+
+tr.editada .botonEditar,tr.editada .botonBorrar{
+    display:none;
+}
+
+tr.editada .botonGuardar, tr.editada .botonCancelar{
+    display:inline-block;
+}
