@@ -47,18 +47,27 @@ class DashboardController extends AbstractDashboardController
         // Enlace a la página principal
         yield MenuItem::linkToUrl('Página Principal', 'fas fa-home', 'http://127.0.0.1:8000');
 
-        // Sección para gestionar productos
-        yield MenuItem::section('Gestión');
-        yield MenuItem::linkToCrud('Productos', 'fas fa-drumstick-bite', Producto::class);
-        yield MenuItem::linkToCrud('Categorias', 'fas fa-tags', Categoria::class);
-        yield MenuItem::linkToCrud('Detalle Pedidos', 'fas fa-receipt', DetallePedido::class);
-        yield MenuItem::linkToCrud('Direcciones', 'fas fa-map-marker-alt', Direccion::class);
-        yield MenuItem::linkToCrud('Metodos de Pago', 'fas fa-credit-card', MetodoPago::class);
+        // Elementos visibles solo para ROLE_ADMIN
+        if ($this->isGranted('ROLE_ADMIN')) {
+            // Sección para gestionar productos
+            yield MenuItem::section('Gestión de Productos');
+            yield MenuItem::linkToCrud('Productos', 'fas fa-drumstick-bite', Producto::class);
+            yield MenuItem::linkToCrud('Categorías', 'fas fa-tags', Categoria::class);
+            yield MenuItem::linkToCrud('Imágenes', 'fa fa-image', Imagen::class);
+
+            // Sección para gestión avanzada
+            yield MenuItem::section('Gestión Avanzada');
+            yield MenuItem::linkToCrud('Detalle Pedidos', 'fas fa-receipt', DetallePedido::class);
+            yield MenuItem::linkToCrud('Métodos de Pago', 'fas fa-credit-card', MetodoPago::class);
+        }
+
+        // Elementos visibles tanto para ROLE_ADMIN como ROLE_USER
+        // Sección de Pedidos y Usuarios
+        yield MenuItem::section('Gestión de Pedidos y Usuarios');
         yield MenuItem::linkToCrud('Pedidos', 'fas fa-shopping-cart', Pedido::class);
-        yield MenuItem::linkToCrud('Reseñas', 'fas fa-star', Resena::class);
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-user', User::class);
-        yield MenuItem::linkToCrud('Imágenes', 'fa fa-image', Imagen::class);
-        
+        yield MenuItem::linkToCrud('Direcciones', 'fas fa-map-marker-alt', Direccion::class);
+        yield MenuItem::linkToCrud('Reseñas', 'fas fa-star', Resena::class);
     }
 
     public function configureActions(): Actions

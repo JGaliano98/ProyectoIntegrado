@@ -1,0 +1,17 @@
+{# templates/resena/crear.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Crear reseña{% endblock %}
+
+{% block body %}
+    <h1>Escribir una reseña para {{ producto.nombre }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.puntuacion, {'label': 'Puntuación'}) }}
+        {{ form_row(form.comentario, {'label': 'Comentario'}) }}
+
+        <button class="btn">Enviar reseña</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('producto_show', {id: producto.id}) }}">Volver al producto</a>
+{% endblock %}

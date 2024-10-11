@@ -3,31 +3,33 @@
 {% block title %}Confirmación de Pedido{% endblock %}
 
 {% block content %}
-    <div class="confirmation-container">
-        <div class="confirmation-header">
-            <h1>Confirmación de Pedido</h1>
-        </div>
+    <div class="content-container">
+        <div class="confirmation-container">
+            <div class="confirmation-header">
+                <h1>Confirmación de Pedido</h1>
+            </div>
 
-        <div class="confirmation-message">
-            <p>Tu pedido ha sido realizado con éxito.</p>
-            <p>Recibirás un correo electrónico con los detalles de tu compra y una copia de la factura adjunta.</p>
-        </div>
+            <div class="confirmation-message">
+                <p>Tu pedido ha sido realizado con éxito.</p>
+                <p>Recibirás un correo electrónico con los detalles de tu compra y una copia de la factura adjunta.</p>
+            </div>
 
-        <div class="payment-info">
-            <p>
-                <strong>Transferencia Bancaria:</strong> Tu envío se realizará cuando recibamos la transferencia.
-            </p>
-            <p>
-                <strong>Pago en Efectivo:</strong> El importe se abonará al recoger el paquete en nuestro local.
-            </p>
-        </div>
+            <div class="payment-info">
+                <p>
+                    <strong>Transferencia Bancaria:</strong> Tu envío se realizará cuando recibamos la transferencia.
+                </p>
+                <p>
+                    <strong>Pago en Efectivo:</strong> El importe se abonará al recoger el paquete en nuestro local.
+                </p>
+            </div>
 
-        <div class="thank-you-message">
-            <p>¡Gracias por tu compra!</p>
-        </div>
+            <div class="thank-you-message">
+                <p>¡Gracias por tu compra!</p>
+            </div>
 
-        <div class="download-invoice">
-            <a href="{{ path('descargar_pdf') }}" class="button download-button">Descargar Factura</a>
+            <div class="download-invoice">
+                <a href="{{ path('descargar_pdf') }}" class="button download-button">Descargar Factura</a>
+            </div>
         </div>
     </div>
 {% endblock %}

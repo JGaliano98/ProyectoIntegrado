@@ -1,3 +1,12 @@
+/* Estilos del contenedor del carrito */
+.content-container {
+    margin-top: 160px; /* Ajusta este valor según la altura combinada del header y nav */
+    padding: 20px;
+}
+.carrito-container {
+    margin-top: 160px; /* Ajusta este valor para evitar el solapamiento con el header y el nav */
+    padding: 20px;
+}
 
 /* Estilos de la tabla del carrito */
 .carrito-table {
@@ -57,8 +66,9 @@
     background-color: #f2dede;
 }
 
+/* Imagen del carrito */
 .imagen-carrito {
-    width: 10px; /* Ajusta el ancho de la imagen */
+    width: 50px; /* Ajusta el ancho de la imagen */
     height: auto; /* Mantener la proporción */
     border-radius: 5px; /* Añadir un borde redondeado, opcional */
     margin-right: 10px;

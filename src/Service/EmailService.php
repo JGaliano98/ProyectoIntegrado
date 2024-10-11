@@ -5,9 +5,6 @@ namespace App\Service;
 
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\Part\DataPart;
-use Symfony\Component\Mime\Part\File;
-use Symfony\Component\Mime\Part\Multipart\MixedPart;
 
 class EmailService
 {
@@ -51,6 +48,17 @@ class EmailService
         $this->mailer->send($email);
     }
 
+    public function sendAdminNotification($toEmail, $productName, $message)
+    {
+        // Crear un correo electrónico para los administradores
+        $email = (new Email())
+            ->from('email@email.com')
+            ->to($toEmail)
+            ->subject('Producto agotado: ' . $productName)
+            ->text("Hola Administrador,\n\nEl producto \"$productName\" se ha agotado.\n\n$message\n\nSaludos,\nHnos Galiano Herreros.")
+            ->html("<p>Hola Administrador,</p><p>El producto <strong>$productName</strong> se ha agotado.</p><p>$message</p><p>Saludos,<br/>Hnos Galiano Herreros.</p>");
 
-
+        // Enviar el correo
+        $this->mailer->send($email);
+    }
 }

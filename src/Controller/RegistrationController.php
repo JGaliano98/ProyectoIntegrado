@@ -35,6 +35,9 @@ class RegistrationController extends AbstractController
             $user->setApellido1($form->get('apellido1')->getData());
             $user->setApellido2($form->get('apellido2')->getData());
             $user->setTelefono($form->get('telefono')->getData());
+            $user->setRoles(["ROLE_USER"]);
+
+
 
             // Hash de la contraseña
             $user->setPassword(
@@ -56,7 +59,7 @@ class RegistrationController extends AbstractController
             $email = (new TemplatedEmail())
                 ->from(new Address('jlopgal0606@g.educaand.es', 'Registro - Carniceria Charcutería Hnos Galiano Herreros'))
                 ->to($user->getEmail())
-                ->subject('Please Confirm your Email')
+                ->subject('Por favor, activa tu cuenta')
                 ->htmlTemplate('registration/activation_email.html.twig')
                 ->context([
                     'activationToken' => $activationToken

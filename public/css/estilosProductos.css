@@ -26,8 +26,8 @@
 
 .producto-item {
     display: flex;
-    flex-direction: column; /* Asegura que los elementos estén alineados verticalmente */
-    justify-content: space-between; /* El botón se mantiene al fondo */
+    flex-direction: column;
+    justify-content: space-between;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;
@@ -35,7 +35,7 @@
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-    min-height: 400px; /* Ajusta este valor según lo que necesites */
+    min-height: 400px;
 }
 
 .producto-item:hover {
@@ -61,43 +61,36 @@
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
-    margin-top: auto; /* Empuja el botón hacia el fondo */
+    margin-top: auto;
 }
 
 .add-to-cart:hover {
     background-color: #0056b3;
 }
 
-
-
 .contenedor {
-    max-width: 1200px; /* Ancho máximo del contenedor */
-    margin: 0 auto; /* Centrar horizontalmente */
-    padding: 0 20px; /* Añadir margen a ambos lados */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
-
 
 @media (max-width: 1200px) {
     .productos-container {
-        grid-template-columns: repeat(3, 1fr); /* 3 columnas en pantallas medianas */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 900px) {
     .productos-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas pequeñas */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 600px) {
     .productos-container {
-        grid-template-columns: 1fr; /* 1 columna en pantallas muy pequeñas */
+        grid-template-columns: 1fr;
     }
 }
-
-
-
-
 
 .filtros-ordenacion {
     margin-bottom: 20px;
@@ -112,4 +105,30 @@
 
 .filtros-ordenacion a:hover {
     text-decoration: underline;
+}
+
+.content-container {
+    margin-top: 160px; /* Ajusta este valor según la altura combinada del header y nav */
+    padding: 20px;
+}
+
+
+/* para controlar el stock */
+
+.sin-stock {
+    opacity: 0.5; /* Hacer que el elemento parezca deshabilitado */
+    pointer-events: none; /* Evitar que se pueda interactuar con el botón */
+}
+
+.sin-stock img {
+    filter: grayscale(100%); /* Convierte la imagen en blanco y negro */
+}
+
+.add-to-cart.sin-stock {
+    background-color: #ccc; /* Cambiar el color del botón cuando está deshabilitado */
+    cursor: not-allowed; /* Cambiar el cursor a "no permitido" */
+}
+
+.add-to-cart.sin-stock:hover {
+    background-color: #ccc; /* Evitar el hover en productos sin stock */
 }

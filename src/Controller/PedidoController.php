@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\DetallePedido;
 use App\Entity\Direccion;
 use App\Entity\Pedido;
+use App\Entity\Producto;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,11 +62,12 @@ class PedidoController extends AbstractController
 
         $entityManager->persist($pedido);
         $totalCarrito = 0;
+        $productosAgotados = []; // Almacena los productos cuyo stock llegue a 0
 
-        // Crear detalles del pedido
+        // Crear detalles del pedido y actualizar el stock
         foreach ($carrito as $item) {
             // Obtener el producto desde la base de datos
-            $producto = $entityManager->getRepository($item['producto']::class)->find($item['producto']->getId());
+            $producto = $entityManager->getRepository(Producto::class)->find($item['producto']->getId());
             $cantidad = $item['cantidad'];
             $precioTotalProducto = ($producto->getPrecio() * $cantidad) / 100;
 
@@ -74,6 +76,22 @@ class PedidoController extends AbstractController
                 return $this->redirectToRoute('carrito');
             }
 
+            // Verificar si el producto tiene suficiente stock
+            if ($producto->getStock() < $cantidad) {
+                $this->addFlash('error', 'El producto ' . $producto->getNombre() . ' no tiene suficiente stock.');
+                return $this->redirectToRoute('carrito');
+            }
+
+            // Restar la cantidad del stock del producto
+            $nuevoStock = $producto->getStock() - $cantidad;
+            $producto->setStock($nuevoStock);
+
+            // Si el stock llega a 0, agregar a la lista de productos agotados
+            if ($nuevoStock == 0) {
+                $productosAgotados[] = $producto;
+            }
+
+            // Crear y persistir el detalle del pedido
             $detallePedido = new DetallePedido();
             $detallePedido->setCantidad($cantidad);
             $detallePedido->setPrecio($precioTotalProducto);
@@ -91,8 +109,22 @@ class PedidoController extends AbstractController
         // Actualizar el total del pedido
         $pedido->setTotal($totalCarrito);
 
-        // Guardar el pedido y los detalles en la base de datos
+        // Guardar el pedido, detalles y stock actualizado en la base de datos
         $entityManager->flush();
+
+        // Enviar correo si algún producto ha llegado a stock 0
+        if (!empty($productosAgotados)) {
+            // Buscar todos los usuarios con ROLE_ADMIN
+            $admins = $entityManager->getRepository(User::class)->findByRole('ROLE_ADMIN');
+            
+            // Enviar un correo a cada administrador
+            foreach ($admins as $admin) {
+                foreach ($productosAgotados as $productoAgotado) {
+                    $mensaje = 'El producto "' . $productoAgotado->getNombre() . '" se ha agotado. Por favor, repón el stock lo antes posible.';
+                    $emailService->sendAdminNotification($admin->getEmail(), $productoAgotado->getNombre(), $mensaje);
+                }
+            }
+        }
 
         // Generar el PDF del pedido
         $html = $this->renderView('pedido/factura.html.twig', [

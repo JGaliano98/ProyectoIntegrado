@@ -5,16 +5,217 @@
 {% block title %}Conócenos - Carnicería Hnos Galiano{% endblock %}
 
 {% block content %}
-<main>
-    <h2>Nuestra Historia</h2>
-    <p>Desde 1985, en Carnicería Hnos Galiano nos hemos dedicado a ofrecer las mejores carnes frescas y productos de calidad a nuestra comunidad. Nuestra pasión por la excelencia y el servicio al cliente nos ha convertido en un referente local.</p>
-    
-    <h2>Nuestro Equipo</h2>
-    <p>Contamos con un equipo de expertos carniceros que seleccionan cuidadosamente cada pieza de carne para asegurarse de que cumpla con los estándares más altos de frescura y calidad.</p>
-    
-    <h2>Nuestra Filosofía</h2>
-    <p>Creemos en la sostenibilidad, el trato justo a nuestros proveedores y la transparencia con nuestros clientes. Nuestro objetivo es llevar a tu mesa solo los productos más frescos y saludables.</p>
+<div class="content-container">
+    <main class="about-us">
+        <section class="section-history">
+            <h2>Nuestra Historia</h2>
+            <div class="history-content">
+                <img src="{{ asset('images/historia.jpg') }}" alt="Nuestra historia" class="about-img-left">
+                <p>Desde 1985, en Carnicería Hnos Galiano nos hemos dedicado a ofrecer las mejores carnes frescas y productos de calidad a nuestra comunidad. Lo que empezó como un pequeño negocio familiar en Orcera, Jaén, se ha convertido en un referente local gracias a nuestra dedicación y amor por lo que hacemos.</p>
+                <p>Hoy, más de 35 años después, seguimos con el mismo compromiso de siempre: ofrecer productos frescos y de alta calidad, seleccionados con el mayor cuidado y profesionalismo, manteniendo vivas las tradiciones familiares y la cercanía con nuestros clientes.</p>
+            </div>
+        </section>
 
-    <!-- Añade más contenido o imágenes según sea necesario -->
-</main>
+        <section class="section-team">
+            <h2>Conoce a Nuestro Equipo</h2>
+            <div class="team-content">
+                <img src="{{ asset('images/equipo.jpg') }}" alt="Nuestro equipo" class="about-img-right">
+                <p>En Carnicería Hnos Galiano, contamos con un equipo de expertos carniceros que seleccionan cuidadosamente cada pieza de carne para asegurarse de que cumpla con los estándares más altos de frescura y calidad. Cada miembro de nuestro equipo comparte una pasión por el producto y un compromiso con nuestros clientes.</p>
+                <p>Con años de experiencia en el sector, nuestro equipo está preparado no solo para ofrecer productos de primera, sino también para asesorarte en la mejor elección según tus necesidades. ¡Estamos aquí para ayudarte a hacer la mejor compra!</p>
+            </div>
+        </section>
+
+        <section class="section-philosophy">
+            <h2>Nuestra Filosofía</h2>
+            <div class="philosophy-content">
+                <img src="{{ asset('images/filosofia.jpg') }}" alt="Nuestra filosofía" class="about-img-left">
+                <p>En Carnicería Hnos Galiano, creemos firmemente en la sostenibilidad, el trato justo a nuestros proveedores y la transparencia con nuestros clientes. Seleccionamos nuestros productos de fuentes responsables, asegurándonos de que cada paso del proceso cumpla con altos estándares éticos y de calidad.</p>
+                <p>Nuestro compromiso es llevar a tu mesa productos frescos y saludables, siempre garantizando el respeto por el medio ambiente y por las tradiciones locales. Nos enorgullecemos de ser parte de una cadena de valor que promueve el comercio justo y la sostenibilidad.</p>
+            </div>
+        </section>
+
+        <section class="section-values">
+            <h2>Nuestros Valores</h2>
+            <div class="values-content">
+                <p><strong>Calidad:</strong> Cada producto que ofrecemos ha sido cuidadosamente seleccionado para garantizar su frescura y sabor.</p>
+                <p><strong>Compromiso:</strong> Con nuestros clientes, proveedores y empleados. Trabajamos para garantizar un trato justo y productos de calidad.</p>
+                <p><strong>Sostenibilidad:</strong> Creemos en prácticas sostenibles y en minimizar nuestro impacto en el medio ambiente.</p>
+                <p><strong>Transparencia:</strong> Nos aseguramos de que nuestros clientes sepan siempre de dónde provienen los productos que consumen.</p>
+            </div>
+        </section>
+
+        <section class="section-gallery">
+            <h2>Galería</h2>
+            <div class="gallery-container">
+                <div class="gallery-wrapper">
+                    <div class="gallery-slides">
+                        <img src="{{ asset('images/galeria1.jpg') }}" alt="Producto 1" class="gallery-img">
+                        <img src="{{ asset('images/galeria2.jpg') }}" alt="Producto 2" class="gallery-img">
+                        <img src="{{ asset('images/galeria3.jpg') }}" alt="Producto 3" class="gallery-img">
+                        <img src="{{ asset('images/galeria4.jpg') }}" alt="Producto 4" class="gallery-img">
+                        <img src="{{ asset('images/galeria5.jpg') }}" alt="Producto 5" class="gallery-img">
+                        <img src="{{ asset('images/galeria6.jpg') }}" alt="Producto 6" class="gallery-img">
+                        <img src="{{ asset('images/galeria7.jpg') }}" alt="Producto 7" class="gallery-img">
+                        <img src="{{ asset('images/galeria8.jpg') }}" alt="Producto 8" class="gallery-img">
+                        <img src="{{ asset('images/galeria9.jpg') }}" alt="Producto 9" class="gallery-img">
+                    </div>
+                </div>
+                <button class="gallery-prev">&#10094;</button>
+                <button class="gallery-next">&#10095;</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .content-container {
+        margin-top: 170px;
+        padding: 20px;
+    }
+
+    .about-us {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 28px;
+        color: #8B0000;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    /* Imágenes flotantes */
+    .about-img-left {
+        float: left;
+        width: 300px;
+        height: auto;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-img-right {
+        float: right;
+        width: 300px;
+        height: auto;
+        margin-left: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-team, .section-philosophy, .section-values, .section-history, .section-gallery {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 40px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .history-content::after,
+    .team-content::after,
+    .philosophy-content::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .section-values {
+        background-color: #f1f1f1;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    /* Estilos para la galería */
+    .gallery-container {
+        position: relative;
+        max-width: 100%;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .gallery-wrapper {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        width: 100%; /* Mostrar todas las imágenes dentro de la caja del contenedor */
+    }
+
+    .gallery-slides {
+        display: flex;
+        width: 100%;
+    }
+
+    .gallery-img {
+        width: calc(33.33% - 20px); /* Mostrar 3 imágenes a la vez */
+        height: auto;
+        margin: 0 10px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .gallery-prev, .gallery-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        z-index: 10;
+    }
+
+    .gallery-prev {
+        left: 10px;
+    }
+
+    .gallery-next {
+        right: 10px;
+    }
+
+    .gallery-prev:hover, .gallery-next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+</style>
+
+<script>
+    const galleryWrapper = document.querySelector('.gallery-wrapper');
+    const nextBtn = document.querySelector('.gallery-next');
+    const prevBtn = document.querySelector('.gallery-prev');
+    let currentSlide = 0;
+    const totalSlides = document.querySelectorAll('.gallery-img').length / 3;
+
+    nextBtn.addEventListener('click', () => {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+        } else {
+            currentSlide = 0;
+        }
+        galleryWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentSlide > 0) {
+            currentSlide--;
+        } else {
+            currentSlide = totalSlides - 1;
+        }
+        galleryWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+    });
+</script>
 {% endblock %}

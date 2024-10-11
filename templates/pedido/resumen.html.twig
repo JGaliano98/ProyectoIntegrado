@@ -3,73 +3,75 @@
 {% block title %}Resumen del Pedido{% endblock %}
 
 {% block content %}
-    <h1>Resumen del Pedido</h1>
+    <div class="content-container">
+        <h1>Resumen del Pedido</h1>
 
-    {# Mostrar mensajes de error #}
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-                {{ message }}
-            </div>
+        {# Mostrar mensajes de error #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
 
-    {% if carrito is empty %}
-        <p>Tu carrito está vacío.</p>
-    {% else %}
-        <table class="carrito-table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% set totalCarrito = 0 %}
-                {% for item in carrito %}
-                    {% set totalProducto = (item.producto.precio * item.cantidad) / 100 %}
-                    {% set totalCarrito = totalCarrito + totalProducto %}
+        {% if carrito is empty %}
+            <p>Tu carrito está vacío.</p>
+        {% else %}
+            <table class="carrito-table">
+                <thead>
                     <tr>
-                        <td>{{ item.producto.nombre }}</td>
-                        <td>{{ item.cantidad }}</td>
-                        <td>€{{ (item.producto.precio / 100) | number_format(2, '.', ',') }}</td>
-                        <td>€{{ totalProducto | number_format(2, '.', ',') }}</td>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
                     </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan="3" style="text-align: right;"><strong>Total del Carrito:</strong></td>
-                    <td>€{{ totalCarrito | number_format(2, '.', ',') }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <form action="{{ path('realizar_pedido') }}" method="POST">
-            {# Token CSRF para seguridad #}
-            <input type="hidden" name="_token" value="{{ csrf_token('realizar_pedido') }}">
-
-            <div class="form-group">
-                <label for="direccion">Selecciona una dirección:</label>
-                <select name="direccion" id="direccion" required>
-                    {% for direccion in direcciones %}
-                        <option value="{{ direccion.id }}">
-                            {{ direccion.calle }}, {{ direccion.numero }}, {{ direccion.localidad }}, {{ direccion.codigoPostal }}, {{ direccion.provincia }}
-                        </option>
+                </thead>
+                <tbody>
+                    {% set totalCarrito = 0 %}
+                    {% for item in carrito %}
+                        {% set totalProducto = (item.producto.precio * item.cantidad) / 100 %}
+                        {% set totalCarrito = totalCarrito + totalProducto %}
+                        <tr>
+                            <td>{{ item.producto.nombre }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>€{{ (item.producto.precio / 100) | number_format(2, '.', ',') }}</td>
+                            <td>€{{ totalProducto | number_format(2, '.', ',') }}</td>
+                        </tr>
                     {% endfor %}
-                </select>
-            </div>
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>Total del Carrito:</strong></td>
+                        <td>€{{ totalCarrito | number_format(2, '.', ',') }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="form-group">
-                <label for="metodo_pago">Selecciona un método de pago:</label>
-                <select name="metodo_pago" id="metodo_pago" required>
-                    {% for metodo in metodosPago %}
-                        <option value="{{ metodo.id }}">{{ metodo.tipo }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            <form action="{{ path('realizar_pedido') }}" method="POST">
+                {# Token CSRF para seguridad #}
+                <input type="hidden" name="_token" value="{{ csrf_token('realizar_pedido') }}">
 
-            <button type="submit" class="button realizar-pedido">Confirmar Pedido</button>
-        </form>
-    {% endif %}
+                <div class="form-group">
+                    <label for="direccion">Selecciona una dirección:</label>
+                    <select name="direccion" id="direccion" required>
+                        {% for direccion in direcciones %}
+                            <option value="{{ direccion.id }}">
+                                {{ direccion.calle }}, {{ direccion.numero }}, {{ direccion.localidad }}, {{ direccion.codigoPostal }}, {{ direccion.provincia }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="metodo_pago">Selecciona un método de pago:</label>
+                    <select name="metodo_pago" id="metodo_pago" required>
+                        {% for metodo in metodosPago %}
+                            <option value="{{ metodo.id }}">{{ metodo.tipo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="button realizar-pedido">Confirmar Pedido</button>
+            </form>
+        {% endif %}
+    </div>
 {% endblock %}

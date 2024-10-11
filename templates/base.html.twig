@@ -22,29 +22,42 @@
         <img src="{{ asset('images/carniceria.jpg') }}" alt="Logo Carnicería Hnos Galiano">
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="{{ path('home') }}">Inicio</a></li>
-            <li><a href="{{ path('conocenos') }}">Conócenos</a></li>
-            <li><a href="{{ path('contactanos') }}">Contáctanos</a></li>
-            <li><a href="{{ path('productos') }}">Productos</a></li>
-            <li><a href="">|</a></li>
-            <li><a href="{{ path('carrito') }}"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+        <nav>
+            <ul>
+                <li><a href="{{ path('home') }}"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="{{ path('conocenos') }}"><i class="fas fa-users"></i> Conócenos</a></li>
+                <li><a href="{{ path('contactanos') }}"><i class="fas fa-envelope"></i> Contáctanos</a></li>
+                <li><a href="{{ path('productos') }}"><i class="fas fa-box"></i> Productos</a></li>
+                <li><a href="">|</a></li>
+                <li><a href="{{ path('carrito') }}"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
 
-            {% if app.user %}
-                <li><a href="#">Bienvenido, {{ app.user.nombre }}</a></li> 
-                <li><a href="{{ path('app_logout') }}">Cerrar Sesión</a></li>
-            {% else %}
-                <li><a href="{{ path('app_login') }}"> Iniciar Sesión</a></li>
-            {% endif %}
-
-            
-        </ul>
-    </nav>
-
-
+                {% if app.user %}
+                    <li><a href="#"><i class="fas fa-user"></i> Bienvenido, {{ app.user.nombre }}</a></li> 
+                    {% if 'ROLE_ADMIN' in app.user.roles %}
+                        <li><a href="{{ path('admin') }}"><i class="fas fa-user-shield"></i> Administración</a></li>
+                    {% elseif 'ROLE_USER' in app.user.roles %}
+                        <li><a href="{{ path('admin') }}"><i class="fas fa-user-cog"></i> Tu Cuenta</a></li>
+                    {% endif %}
+                    <li><a href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                {% else %}
+                    <li><a href="{{ path('app_login') }}"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
+                {% endif %}
+            </ul>
+        </nav>
 
     <div class="content">
+        <div class="container mt-3">
+            {% for type, messages in app.flashes %}
+                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
         {% block content %}{% endblock %}
     </div>
 
