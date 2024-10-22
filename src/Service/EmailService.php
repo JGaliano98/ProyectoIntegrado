@@ -61,4 +61,25 @@ class EmailService
         // Enviar el correo
         $this->mailer->send($email);
     }
+
+    public function enviarCorreoContacto(array $data)
+{
+    // Crear el correo electrónico de contacto
+    $email = (new Email())
+        ->from($data['email'])  // El correo del remitente
+        ->to('t1s7lopezm@gmail.com')  // Correo destino
+        ->subject('Nuevo mensaje de contacto')
+        ->html("
+            <p>Has recibido un nuevo mensaje de contacto de:</p>
+            <p><strong>Nombre:</strong> {$data['nombre']} {$data['apellidos']}</p>
+            <p><strong>Email:</strong> {$data['email']}</p>
+            <p><strong>Teléfono:</strong> {$data['telefono']}</p>
+            <p><strong>Mensaje:</strong></p>
+            <p>{$data['mensaje']}</p>
+        ");
+
+    // Enviar el correo
+    $this->mailer->send($email);
+}
+
 }

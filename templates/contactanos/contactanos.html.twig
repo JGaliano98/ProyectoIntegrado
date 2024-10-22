@@ -8,6 +8,20 @@
 <div class="content-container">
     <main class="contacto">
 
+        {# Mensajes flash de éxito o error tras el envío del formulario #}
+        <div id="messages">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+
         <section class="section-contact-info">
             <h2>Datos de Contacto</h2>
             <p>Estamos aquí para ayudarte. Si tienes alguna pregunta o necesitas más información sobre nuestros productos, no dudes en ponerte en contacto con nosotros a través de los siguientes medios:</p>
@@ -22,32 +36,36 @@
 
         <section class="section-contact-form">
             <h3>Formulario de Contacto</h3>
-            <form action="{{ path('app_login') }}" method="post" class="contact-form">
+            <form id="contact-form" method="post" class="contact-form">
+                {{ form_start(form) }}
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" id="nombre" name="nombre" required>
+                        {{ form_label(form.nombre) }}
+                        {{ form_widget(form.nombre) }}
                     </div>
                     <div class="form-group">
-                        <label for="apellidos">Apellidos:</label>
-                        <input type="text" id="apellidos" name="apellidos" required>
+                        {{ form_label(form.apellidos) }}
+                        {{ form_widget(form.apellidos) }}
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="email">Correo Electrónico:</label>
-                        <input type="email" id="email" name="email" required>
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email) }}
                     </div>
                     <div class="form-group">
-                        <label for="telefono">Teléfono:</label>
-                        <input type="tel" id="telefono" name="telefono" required>
+                        {{ form_label(form.telefono) }}
+                        {{ form_widget(form.telefono) }}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="mensaje">Mensaje:</label>
-                    <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
+                    {{ form_label(form.mensaje) }}
+                    {{ form_widget(form.mensaje) }}
                 </div>
                 <button type="submit">Enviar</button>
+                {# Añadimos un contenedor vacío para mostrar los mensajes debajo del botón #}
+                <div id="form-message" style="margin-top: 10px;"></div>
+                {{ form_end(form) }}
             </form>
         </section>
 
@@ -68,7 +86,6 @@
 </div>
 
 <style>
-    /* Ajuste para que el contenido comience después del header y el nav */
     .content-container {
         margin-top: 180px;
         padding: 20px;
@@ -81,7 +98,6 @@
         font-family: Arial, sans-serif;
     }
 
-    /* Separación en secciones */
     .section-contact-info, .section-contact-form, .section-map {
         background-color: #f9f9f9;
         border-radius: 8px;
@@ -96,17 +112,11 @@
         margin-top: 0;
     }
 
-    /* Espacio entre párrafos */
-    .section-contact-info p {
-        margin-bottom: 10px;
-    }
-
     .contact-info {
         font-size: 0.9rem;
         line-height: 1.6;
     }
 
-    /* Estructura de dos columnas en el formulario */
     .form-row {
         display: flex;
         gap: 20px;
@@ -117,10 +127,6 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-    }
-
-    label {
-        margin-bottom: 5px;
     }
 
     input, textarea {
@@ -145,11 +151,50 @@
         background-color: #0056b3;
     }
 
-    /* Estilo para el mapa al final */
     .map-container {
         margin-top: 20px;
         border-radius: 8px;
         overflow: hidden;
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contact-form');
+    const messageDiv = document.getElementById('form-message');
+    
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();  // Evitar que el formulario se envíe normalmente
+
+        // Recopilar los datos del formulario
+        const formData = new FormData(form);
+
+        // Enviar la solicitud con Fetch
+        fetch('{{ path('app_contacto') }}', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'  // Asegura que sea detectado como AJAX
+            },
+            body: formData,
+        })
+        .then(response => response.json())  // Esperar la respuesta en formato JSON
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito debajo del botón
+                messageDiv.innerHTML = '<div class="alert alert-success">Tu mensaje ha sido enviado correctamente.</div>';
+                form.reset();  // Resetear el formulario después de enviarlo
+            } else {
+                // Mostrar mensaje de error debajo del botón
+                messageDiv.innerHTML = '<div class="alert alert-danger">Error: ' + data.error + '</div>';
+            }
+        })
+        .catch(error => {
+            messageDiv.innerHTML = '<div class="alert alert-danger">Error al enviar el formulario. Intenta nuevamente.</div>';
+            console.error('Error:', error);
+        });
+    });
+});
+
+</script>
+
 {% endblock %}
