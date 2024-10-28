@@ -27,12 +27,17 @@ class ResenaController extends AbstractController
     {
         $user = $this->getUser();
 
-        // Verifica si el usuario ha comprado el producto
+        // Verificar si el usuario ha iniciado sesión
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Verificar si el usuario ha comprado el producto
         $detalleCompra = $this->detallePedidoRepository->findByUserAndProduct($user, $producto);
 
         if (!$detalleCompra) {
             $this->addFlash('error', 'No puedes reseñar este producto ya que no lo has comprado.');
-            // return $this->redirectToRoute('home');
+            return $this->redirectToRoute('home');
         }
 
         if ($request->isMethod('POST')) {
@@ -48,7 +53,7 @@ class ResenaController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Reseña creada correctamente.');
-            // return $this->redirectToRoute('home'); 
+            return $this->redirectToRoute('home'); 
         }
 
         return $this->render('resena/crear_resena.html.twig', [
