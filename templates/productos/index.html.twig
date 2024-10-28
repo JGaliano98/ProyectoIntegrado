@@ -67,6 +67,8 @@
                         <p>{{ producto.descripcion|raw }}</p>
                         <p><strong>Precio: </strong>{{ (producto.precio / 100) | number_format(2, '.', ',') }}€</p>
 
+                        <a href="{{ path('producto_resenas', { id: producto.id }) }}" class="button ver-resenas">Ver Reseñas</a>
+
                         {% if producto.stock > 0 %}
                             <a href="{{ path('carrito_add', { id: producto.id }) }}" class="button add-to-cart">Añadir al Carrito</a>
                         {% else %}

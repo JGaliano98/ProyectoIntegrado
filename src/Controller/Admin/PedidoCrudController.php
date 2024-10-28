@@ -130,8 +130,9 @@ class PedidoCrudController extends AbstractCrudController
         // Enviar el correo de confirmación de envío al usuario
         $user = $pedido->getUser();
         if ($user instanceof User) {
-            $emailService->sendOrderProcessed($user->getEmail(), $user->getNombre());
+            $emailService->sendOrderProcessed($user->getEmail(), $user->getNombre(), $pedido);
         }
+
 
         $this->addFlash('success', 'El pedido ha sido procesado correctamente y el usuario ha sido notificado.');
         return $this->redirectToRoute('admin', [

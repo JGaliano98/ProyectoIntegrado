@@ -16,6 +16,18 @@ class PedidoRepository extends ServiceEntityRepository
         parent::__construct($registry, Pedido::class);
     }
 
+    public function findPedidosByUserAndProduct($user, $producto): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.detallePedidos', 'd')    // Join con DetallePedido
+            ->andWhere('p.user = :user')            // Filtro para el usuario
+            ->andWhere('d.producto = :producto')    // Filtro para el producto específico en DetallePedido
+            ->setParameter('user', $user)
+            ->setParameter('producto', $producto)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Pedido[] Returns an array of Pedido objects
     //     */

@@ -93,4 +93,34 @@ class Resena
 
         return $this;
     }
+
+    #[ORM\Column(type: 'integer')]
+    private int $likes = 0;
+
+    #[ORM\Column(type: 'integer')]
+    private int $dislikes = 0;
+
+    public function getLikes(): int
+    {
+        return $this->likes;
+    }
+
+    public function incrementLikes(): self
+    {
+        $this->likes++;
+        return $this;
+    }
+
+    public function getDislikes(): int
+    {
+        return $this->dislikes;
+    }
+
+    public function incrementDislikes(): self
+    {
+        $this->dislikes++;
+        return $this;
+    }
 }
+
+

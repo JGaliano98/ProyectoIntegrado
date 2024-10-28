@@ -6,9 +6,7 @@ use App\Entity\DetallePedido;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<DetallePedido>
- */
+
 class DetallePedidoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +14,33 @@ class DetallePedidoRepository extends ServiceEntityRepository
         parent::__construct($registry, DetallePedido::class);
     }
 
-    //    /**
-    //     * @return DetallePedido[] Returns an array of DetallePedido objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+   
+    // public function findByUserAndProduct($user, $producto): array
+    // {
+    //     return $this->createQueryBuilder('d')
+    //         ->addSelect('p', 'u')                 // Incluimos 'Pedido' y 'User' en la consulta
+    //         ->innerJoin('d.pedido', 'p')          // Hacemos un join entre DetallePedido y Pedido
+    //         ->innerJoin('p.user', 'u')            // Hacemos un join entre Pedido y User
+    //         ->andWhere('u = :user')               // Filtramos por el usuario
+    //         ->andWhere('d.producto = :producto')  // Filtramos por el producto
+    //         ->setParameter('user', $user)
+    //         ->setParameter('producto', $producto)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
-    //    public function findOneBySomeField($value): ?DetallePedido
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findByUserAndProduct($user, $producto): array
+    {
+        return $this->createQueryBuilder('d')
+            ->join('d.pedido', 'p')
+            ->andWhere('p.user = :user')
+            ->andWhere('d.producto = :producto')
+            ->setParameter('user', $user)
+            ->setParameter('producto', $producto)
+            ->getQuery()
+            ->getResult();
+    }
+    
+
+
 }

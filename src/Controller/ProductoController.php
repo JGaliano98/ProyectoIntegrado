@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Producto;
 use App\Entity\Categoria;
+use App\Repository\ResenaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,5 +39,17 @@ class ProductoController extends AbstractController
                 'orden' => $orden,
             ]);
         }
+    }
+
+    #[Route('/producto/{id}/resenas', name: 'producto_resenas')]
+    public function verResenas(Producto $producto, ResenaRepository $resenaRepository): Response
+    {
+        // Obtener reseñas del producto
+        $resenas = $resenaRepository->findBy(['producto' => $producto], ['fecha' => 'DESC']);
+
+        return $this->render('productos/resenas.html.twig', [
+            'producto' => $producto,
+            'resenas' => $resenas,
+        ]);
     }
 }
