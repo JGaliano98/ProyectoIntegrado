@@ -15,12 +15,11 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->getIsActive()) {
-            throw new CustomUserMessageAuthenticationException('Your account is not activated.');
+            throw new CustomUserMessageAuthenticationException('Tu cuenta no está activada.');
         }
     }
 
     public function checkPostAuth(UserInterface $user): void
     {
-        // Aquí puedes añadir más comprobaciones después de la autenticación si es necesario
     }
 }

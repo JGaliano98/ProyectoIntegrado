@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Envío - Correos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f8fc;
+        }
+        header {
+            background-color: #ffd700;
+            color: #333333;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 10px;
+        }
+        .tracking-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .tracking-info p {
+            font-size: 1em;
+            margin: 8px 0;
+        }
+        .tracking-info span {
+            font-weight: bold;
+        }
+        .status {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .icon {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .icon img {
+            width: 100px;
+            height: auto;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 0.9em;
+            color: #666666;
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Seguimiento de Envíos - Correos
+</header>
+
+<div class="container">
+    <h1>Detalles del Envío</h1>
+    <div class="tracking-info">
+        <p><span>Código de Envío:</span> {{ pedido.getCodigoEnvio() }}</p>
+        <p><span>Fecha del Pedido:</span> {{ pedido.getFecha()|date("d-m-Y") }}</p>
+        <p><span>Nombre:</span> {{ pedido.getNombreCompletoUsuario() }}</p>
+        <p><span>Email:</span> {{ pedido.getEmailUsuario() }}</p>
+        <p><span>Dirección de Envío:</span> {{ pedido.getDireccionCompleta() }}</p>
+        <p><span>Compañía de Transporte:</span> {{ pedido.getCompaniaTransporte() ? pedido.getCompaniaTransporte().getNombre() : 'No especificada' }}</p>
+        <p><span>Total del Pedido:</span> {{ pedido.getTotal() }} €</p>
+    </div>
+
+    <div class="icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/743/743007.png" alt="Envío en progreso">
+        <p><strong>Estado:</strong> El pedido ha sido enviado.</p>
+    </div>
+</div>
+
+<footer>
+    &copy; {{ "now"|date("Y") }} Correos. Todos los derechos reservados.
+</footer>
+
+</body>
+</html>

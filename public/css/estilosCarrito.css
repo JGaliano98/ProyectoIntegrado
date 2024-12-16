@@ -69,7 +69,7 @@
 /* Imagen del carrito */
 .imagen-carrito {
     width: 50px; /* Ajusta el ancho de la imagen */
-    height: auto; /* Mantener la proporción */
-    border-radius: 5px; /* Añadir un borde redondeado, opcional */
-    margin-right: 10px;
+    height: auto; /* Mantiene la proporción */
+    border-radius: 5px; /* Añade un borde redondeado */
+    margin-right: 10px; /* Añade un margen a la derecha */
 }

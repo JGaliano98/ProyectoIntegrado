@@ -27,7 +27,7 @@ class ProductoCrudController extends AbstractCrudController
             TextField::new('nombre', 'Nombre'),
             TextEditorField::new('descripcion', 'Descripción'),
             MoneyField::new('precio', 'Precio')
-                ->setCurrency('EUR'), // Ajusta la moneda según tu preferencia
+                ->setCurrency('EUR'),
             IntegerField::new('stock', 'Stock'),
             IntegerField::new('stock_min', 'Stock Mínimo'),
             IntegerField::new('stock_max', 'Stock Máximo'),

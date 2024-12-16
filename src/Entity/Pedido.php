@@ -55,6 +55,9 @@ class Pedido
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $otra_info_direccion = null;
 
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private ?string $codigoEnvio = null;
+
     /**
      * @var Collection<int, DetallePedido>
      */
@@ -66,6 +69,9 @@ class Pedido
 
     #[ORM\ManyToOne(inversedBy: 'pedidos')]
     private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'pedidos')]
+    private ?CompaniaTransporte $companiaTransporte = null;
 
     public function __construct()
     {
@@ -311,6 +317,47 @@ public function getNombreCompletoUsuario(): string
     }
     return '';
 }
+
+public function getCompaniaTransporte(): ?CompaniaTransporte
+{
+    return $this->companiaTransporte;
+}
+
+public function setCompaniaTransporte(?CompaniaTransporte $companiaTransporte): static
+{
+    $this->companiaTransporte = $companiaTransporte;
+
+    return $this;
+}
+
+public function getCodigoEnvio(): ?string
+{
+    return $this->codigoEnvio;
+}
+
+public function setCodigoEnvio(string $codigoEnvio): self
+{
+    $this->codigoEnvio = $codigoEnvio;
+    return $this;
+}
+
+//para añadir el metodo de pago al pedido:
+
+#[ORM\Column(type: "string", length: 255)]
+private ?string $metodoPago = null;
+
+public function getMetodoPago(): ?string
+{
+    return $this->metodoPago;
+}
+
+public function setMetodoPago(string $metodoPago): self
+{
+    $this->metodoPago = $metodoPago;
+
+    return $this;
+}
+
 
 
 

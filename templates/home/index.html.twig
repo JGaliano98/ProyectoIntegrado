@@ -2,14 +2,14 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Página de Inicio - Carnicería Hnos Galiano{% endblock %}
+{% block title %}Inicio - Carnicería Hnos Galiano{% endblock %}
 
 {% block content %}
 <div class="carousel">
     <div class="carousel-container">
         {% for image in images %}
             <div class="carousel-slide">
-                <img src="{{ asset(image) }}" alt="Carrusel Imagen">
+                <img src="{{ asset(image) }}" alt="Imagen del carrusel de Carnicería Hnos Galiano">
             </div>
         {% endfor %}
     </div>
@@ -26,32 +26,36 @@
 </div>
 
 <main>
-    <h2>Nuestros Productos Destacados</h2>
+    <h2>Calidad y Tradición</h2>
+    <p>
+        En Carnicería Hnos Galiano, nos dedicamos a ofrecer productos frescos, de alta calidad, y 
+        elaborados con pasión por la tradición. Descubre por qué somos la elección de miles de familias.
+    </p>
+
+    <h2>Productos Destacados</h2>
     <div class="section-content">
         <div>
-            <h3>Carnes Rojas</h3>
-            <p>Ofrecemos una amplia variedad de carnes rojas seleccionadas para ti.</p>
+            <h3>Carnes de Calidad</h3>
+            <p>Disfruta de nuestras carnes frescas, seleccionadas para satisfacer los paladares más exigentes.</p>
         </div>
         <div>
-            <h3>Embutidos</h3>
-            <p>Descubre nuestros embutidos artesanales de la mejor calidad.</p>
+            <h3>Charcutería Artesanal</h3>
+            <p>Explora nuestra variedad de embutidos hechos a mano, con ingredientes de primera calidad.</p>
         </div>
         <div>
-            <h3>Especialidades</h3>
-            <p>Prueba nuestras especialidades únicas y frescas cada día.</p>
+            <h3>Recetas Exclusivas</h3>
+            <p>Prueba nuestras especialidades únicas, preparadas con dedicación y autenticidad.</p>
         </div>
     </div>
 
     <!-- Contenedor para los botones centrados -->
-    <div class="button-container">
-        <a href="#" class="button">Explora Nuestros Productos</a>
-        <a href="{{ path('admin') }}" class="button">Ir al Panel de Administración</a>
-    </div>
+    {# <div class="button-container">
+        <a href="{{ path('productos') }}" class="button">Ver Productos</a>
+        <a href="{{ path('admin') }}" class="button">Acceder al Panel</a>
+    </div> #}
 </main>
 {% endblock %}
-
 
 {% block javascripts %}
     <script src="{{ asset('js/carousel.js') }}"></script>
 {% endblock %}
-

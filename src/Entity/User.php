@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -120,7 +121,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -156,8 +156,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+      
     }
 
     public function getNombre(): ?string
@@ -208,6 +207,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    #[Assert\Length(min: 6, minMessage: "La contraseña debe tener al menos 6 caracteres.")]
+    private ?string $plainPassword = null;
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Resena>
      */
@@ -229,7 +243,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeResena(Resena $resena): static
     {
         if ($this->resenas->removeElement($resena)) {
-            // set the owning side to null (unless already changed)
             if ($resena->getUser() === $this) {
                 $resena->setUser(null);
             }
@@ -259,7 +272,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeMetodoPago(MetodoPago $metodoPago): static
     {
         if ($this->metodoPagos->removeElement($metodoPago)) {
-            // set the owning side to null (unless already changed)
             if ($metodoPago->getUser() === $this) {
                 $metodoPago->setUser(null);
             }
@@ -289,7 +301,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removePedido(Pedido $pedido): static
     {
         if ($this->pedidos->removeElement($pedido)) {
-            // set the owning side to null (unless already changed)
             if ($pedido->getUser() === $this) {
                 $pedido->setUser(null);
             }
@@ -319,7 +330,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeDireccion(Direccion $direccion): static
     {
         if ($this->direccions->removeElement($direccion)) {
-            // set the owning side to null (unless already changed)
             if ($direccion->getUser() === $this) {
                 $direccion->setUser(null);
             }

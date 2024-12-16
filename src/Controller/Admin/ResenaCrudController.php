@@ -39,10 +39,12 @@ class ResenaCrudController extends AbstractCrudController
 
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
-        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        // Administradores y managers ven todas las reseñas
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN') || $this->authorizationChecker->isGranted('ROLE_MANAGER')) {
             return $qb;
         }
 
+        // Usuarios solo ven sus propias reseñas
         if ($this->authorizationChecker->isGranted('ROLE_USER')) {
             $qb->andWhere('entity.user = :user')
                ->setParameter('user', $user);
@@ -75,4 +77,19 @@ class ResenaCrudController extends AbstractCrudController
         ];
     }
     */
+
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            \EasyCorp\Bundle\EasyAdminBundle\Field\IdField::new('id'),
+            \EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField::new('producto', 'Producto')->formatValue(function ($value, $entity) {
+                return $entity->getProducto() ? $entity->getProducto()->getNombre() : null;
+            }),
+            \EasyCorp\Bundle\EasyAdminBundle\Field\TextField::new('comentario', 'Comentario'),
+            \EasyCorp\Bundle\EasyAdminBundle\Field\NumberField::new('puntuacion', 'Puntuación'),
+            \EasyCorp\Bundle\EasyAdminBundle\Field\NumberField::new('likes', 'Likes'),
+            \EasyCorp\Bundle\EasyAdminBundle\Field\NumberField::new('dislikes', 'Dislikes')
+            
+        ];
+    }
 }

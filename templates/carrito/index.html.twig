@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="content-container">
-        <h1>Tu Carrito de Compras</h1>
+        <h1 class="titulo-centrado">Tu Carrito de Compras</h1>
 
         {# Mostrar mensajes de error #}
         {% for label, messages in app.flashes %}
@@ -16,7 +16,7 @@
         {% endfor %}
 
         {% if carrito is empty %}
-            <p>Tu carrito está vacío.</p>
+              <p style="text-align: center; margin-top: 50px;">Tu carrito está vacío.</p>
         {% else %}
             <table class="carrito-table">
                 <thead>
@@ -34,7 +34,12 @@
                         {% set totalProducto = (item.producto.precio * item.cantidad) / 100 %}
                         {% set totalCarrito = totalCarrito + totalProducto %}
                         <tr id="producto-{{ item.producto.id }}">
-                            <td>{{ item.producto.nombre }}</td>
+                            <td>
+                                {% if item.producto.foto %}
+                                    <img src="{{ asset('uploads/productos/' ~ item.producto.foto) }}" alt="{{ item.producto.nombre }}" class="imagen-carrito">
+                                {% endif %}
+                                {{ item.producto.nombre }}
+                            </td>
                             <td>
                                 <a href="#" data-id="{{ item.producto.id }}" class="button decrement">-</a>
                                 <span class="cantidad">{{ item.cantidad }}</span>
@@ -55,12 +60,17 @@
             </table>
 
             <!-- Botón para realizar pedido -->
-            <div class="realizar-pedido-container">
-                <a href="{{ path('resumen_pedido') }}" class="button realizar-pedido">Realizar Pedido</a>
-            </div>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <div class="realizar-pedido-container">
+                    <a href="{{ path('resumen_pedido') }}" class="realizar-pedido">Realizar Pedido</a>
+                </div>
+            {% else %}
+                <p style="text-align: center; margin: 20px auto; font-size: 1.2em;">Inicia sesión para realizar el pedido.</p>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}
+
 
 {% block javascripts %}
 <script>
@@ -138,5 +148,3 @@
     });
 </script>
 {% endblock %}
-
-

@@ -7,7 +7,12 @@ use App\Entity\DetallePedido;
 use App\Entity\Direccion;
 use App\Entity\Pedido;
 use App\Entity\Producto;
+use App\Entity\CompaniaTransporte;
+use App\Entity\MetodoPago;
 use App\Entity\User;
+use App\Repository\CompaniaTransporteRepository;
+use App\Repository\DireccionRepository;
+use App\Repository\MetodoPagoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +25,36 @@ use Dompdf\Options;
 
 class PedidoController extends AbstractController
 {
+    #[Route('/resumen-pedido', name: 'resumen_pedido')]
+    public function resumenPedido(
+        SessionInterface $session,
+        CompaniaTransporteRepository $companiaTransporteRepository,
+        DireccionRepository $direccionRepository,
+        MetodoPagoRepository $metodoPagoRepository
+    ): Response {
+        // Obtener el carrito de la sesión
+        $carrito = $session->get('carrito', []);
+
+        // Suponiendo que tienes un usuario autenticado
+        $user = $this->getUser();
+
+        // Obtener direcciones del usuario
+        $direcciones = $direccionRepository->findBy(['user' => $user]);
+
+        // Obtener todos los métodos de pago disponibles
+        $metodosPago = $metodoPagoRepository->findAll();
+
+        // Obtener todas las compañías de transporte
+        $companiasTransporte = $companiaTransporteRepository->findAll();
+
+        return $this->render('pedido/resumen.html.twig', [
+            'carrito' => $carrito,
+            'direcciones' => $direcciones,
+            'metodosPago' => $metodosPago,
+            'companiasTransporte' => $companiasTransporte,
+        ]);
+    }
+
     #[Route('/realizar-pedido', name: 'realizar_pedido', methods: ['POST'])]
     public function realizarPedido(Request $request, SessionInterface $session, EntityManagerInterface $entityManager, EmailService $emailService): Response
     {
@@ -45,6 +80,23 @@ class PedidoController extends AbstractController
             throw new \Exception("El usuario no está autenticado o no es una instancia válida.");
         }
 
+        // Obtener la compañía de transporte seleccionada
+        $companiaTransporteId = $request->request->get('compania_transporte');
+        $companiaTransporte = $entityManager->getRepository(CompaniaTransporte::class)->find($companiaTransporteId);
+
+        if (!$companiaTransporte) {
+            $this->addFlash('error', 'Por favor, selecciona una compañía de transporte válida.');
+            return $this->redirectToRoute('resumen_pedido');
+        }
+
+        // Obtener el método de pago seleccionado
+        $metodoPagoNombre = $request->request->get('metodo_pago_nombre');
+
+        if (!$metodoPagoNombre) {
+            $this->addFlash('error', 'Por favor, selecciona un método de pago válido.');
+            return $this->redirectToRoute('resumen_pedido');
+        }
+
         // Crear el pedido
         $pedido = new Pedido();
         $pedido->setFecha(new \DateTime());
@@ -59,14 +111,19 @@ class PedidoController extends AbstractController
         $pedido->setPaisDireccion($direccion->getPais());
         $pedido->setOtraInfoDireccion($direccion->getOtros());
         $pedido->setUser($user);
+        $pedido->setCompaniaTransporte($companiaTransporte);
+        $pedido->setMetodoPago($metodoPagoNombre);
+
+        // Generar un código de envío aleatorio
+        $codigoEnvio = 'ENV' . strtoupper(bin2hex(random_bytes(5)));
+        $pedido->setCodigoEnvio($codigoEnvio);
 
         $entityManager->persist($pedido);
         $totalCarrito = 0;
-        $productosAgotados = []; // Almacena los productos cuyo stock llegue a 0
+        $productosAgotados = [];
 
         // Crear detalles del pedido y actualizar el stock
         foreach ($carrito as $item) {
-            // Obtener el producto desde la base de datos
             $producto = $entityManager->getRepository(Producto::class)->find($item['producto']->getId());
             $cantidad = $item['cantidad'];
             $precioTotalProducto = ($producto->getPrecio() * $cantidad) / 100;
@@ -76,22 +133,19 @@ class PedidoController extends AbstractController
                 return $this->redirectToRoute('carrito');
             }
 
-            // Verificar si el producto tiene suficiente stock
             if ($producto->getStock() < $cantidad) {
                 $this->addFlash('error', 'El producto ' . $producto->getNombre() . ' no tiene suficiente stock.');
                 return $this->redirectToRoute('carrito');
             }
 
-            // Restar la cantidad del stock del producto
             $nuevoStock = $producto->getStock() - $cantidad;
             $producto->setStock($nuevoStock);
 
-            // Si el stock llega a 0, agregar a la lista de productos agotados
-            if ($nuevoStock == 0) {
+            if ($nuevoStock <= $producto->getStockMin()) {
                 $productosAgotados[] = $producto;
             }
+            
 
-            // Crear y persistir el detalle del pedido
             $detallePedido = new DetallePedido();
             $detallePedido->setCantidad($cantidad);
             $detallePedido->setPrecio($precioTotalProducto);
@@ -106,18 +160,11 @@ class PedidoController extends AbstractController
             $totalCarrito += $precioTotalProducto;
         }
 
-        // Actualizar el total del pedido
         $pedido->setTotal($totalCarrito);
-
-        // Guardar el pedido, detalles y stock actualizado en la base de datos
         $entityManager->flush();
 
-        // Enviar correo si algún producto ha llegado a stock 0
         if (!empty($productosAgotados)) {
-            // Buscar todos los usuarios con ROLE_ADMIN
             $admins = $entityManager->getRepository(User::class)->findByRole('ROLE_ADMIN');
-            
-            // Enviar un correo a cada administrador
             foreach ($admins as $admin) {
                 foreach ($productosAgotados as $productoAgotado) {
                     $mensaje = 'El producto "' . $productoAgotado->getNombre() . '" se ha agotado. Por favor, repón el stock lo antes posible.';
@@ -126,15 +173,15 @@ class PedidoController extends AbstractController
             }
         }
 
-        // Generar el PDF del pedido
         $html = $this->renderView('pedido/factura.html.twig', [
             'carrito' => $carrito,
             'direccion' => $direccion,
             'user' => $user,
+            'pedido' => $pedido,
+            'companiaTransporte' => $companiaTransporte,
         ]);
 
         try {
-            // Configurar DOMPDF
             $options = new Options();
             $options->set('defaultFont', 'Arial');
             $options->set('isHtml5ParserEnabled', true);
@@ -145,22 +192,16 @@ class PedidoController extends AbstractController
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
 
-            // Guardar el PDF temporalmente
             $pdfOutput = $dompdf->output();
             $pdfFilePath = __DIR__ . '/../../public/factura_generada.pdf';
             file_put_contents($pdfFilePath, $pdfOutput);
 
-            // Enviar el correo de confirmación con el PDF adjunto
-            $emailService->sendOrderConfirmation($user->getEmail(), $pdfFilePath, $user->getNombre());
+            $emailService->sendOrderConfirmation($user->getEmail(), $pdfFilePath, $user->getNombre(), $pedido);
 
-            // Limpiar el carrito después de realizar el pedido y generar el PDF
             $session->remove('carrito');
 
             $this->addFlash('success', 'Tu pedido ha sido realizado con éxito.');
-
-            // Redirigir a la página de confirmación del pedido
             return $this->redirectToRoute('pedido_confirmacion');
-
         } catch (\Exception $e) {
             $this->addFlash('error', 'Error generando el PDF: ' . $e->getMessage());
             return $this->redirectToRoute('carrito');
@@ -189,6 +230,23 @@ class PedidoController extends AbstractController
         return new Response(file_get_contents($pdfFilePath), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="factura.pdf"'
+        ]);
+    }
+
+
+    #[Route('/seguimiento-pedido/{codigoEnvio}', name: 'pedido_seguimiento')]
+    public function seguimientoPedido($codigoEnvio, EntityManagerInterface $entityManager): Response
+    {
+        // Buscar el pedido por el código de envío
+        $pedido = $entityManager->getRepository(Pedido::class)->findOneBy(['codigoEnvio' => $codigoEnvio]);
+
+        if (!$pedido) {
+            throw $this->createNotFoundException('El pedido no fue encontrado.');
+        }
+
+        // Renderizar la vista de seguimiento
+        return $this->render('pedido/seguimiento.html.twig', [
+            'pedido' => $pedido
         ]);
     }
 }

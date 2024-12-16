@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\Pedido;
 use App\Entity\User;
 use App\Service\EmailService;
-use Doctrine\DBAL\Query\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -18,14 +17,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\FilterCollection;
 use Doctrine\ORM\QueryBuilder as ORMQueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection as CollectionFilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
-use Symfony\Bundle\SecurityBundle\Security as SecurityBundleSecurity;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PedidoCrudController extends AbstractCrudController
@@ -35,7 +32,7 @@ class PedidoCrudController extends AbstractCrudController
     private $security;
     private $authorizationChecker;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityManagerInterface $entityManager, SecurityBundleSecurity $security, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityManagerInterface $entityManager, Security $security, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->entityManager = $entityManager;
@@ -48,8 +45,7 @@ class PedidoCrudController extends AbstractCrudController
         return Pedido::class;
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, CollectionFilterCollection $filters): ORMQueryBuilder
-
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): ORMQueryBuilder
     {
         // Obtenemos el usuario autenticado
         $user = $this->security->getUser();
@@ -62,8 +58,8 @@ class PedidoCrudController extends AbstractCrudController
         // Obtenemos el query builder por defecto
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
-        // Si el usuario tiene el rol ROLE_ADMIN, no aplicamos ningún filtro (ve todos los pedidos)
-        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        // Si el usuario tiene el rol ROLE_ADMIN o ROLE_MANAGER, no aplicamos ningún filtro (ve todos los pedidos)
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN') || $this->authorizationChecker->isGranted('ROLE_MANAGER')) {
             return $qb;
         }
 
@@ -77,24 +73,26 @@ class PedidoCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-    {
-        $fields = [
-            IdField::new('id')->onlyOnIndex(),
-            DateField::new('fecha')->setFormat('dd-MM-yyyy HH:mm'), // Formato "día-mes-año horas:minutos"
-            TextField::new('estado', 'Estado'),
-            TextField::new('nombreCompletoUsuario', 'Nombre Completo')->onlyOnDetail(),
-            TextField::new('email_usuario', 'Email Cliente'),
-            TextField::new('direccionCompleta', 'Dirección')->onlyOnDetail(),
-        ];
+{
+    $fields = [
+        IdField::new('id')->onlyOnIndex(),
+        DateField::new('fecha')->setFormat('dd-MM-yyyy HH:mm'), // Formato "día-mes-año horas:minutos"
+        TextField::new('estado', 'Estado'),
+        TextField::new('nombreCompletoUsuario', 'Nombre Completo')->onlyOnDetail(),
+        TextField::new('email_usuario', 'Email Cliente'),
+        TextField::new('direccionCompleta', 'Dirección')->onlyOnDetail(),
+        TextField::new('metodoPago', 'Método de Pago'), // Mostrar el método de pago seleccionado
+    ];
 
-        if ($pageName === Crud::PAGE_DETAIL) {
-            // Agregar los detalles del pedido en la vista detallada
-            $fields[] = CollectionField::new('detallePedidos', 'Detalles del Pedido')
-                ->setTemplatePath('admin/detalle_pedido.html.twig');
-        }
-
-        return $fields;
+    if ($pageName === Crud::PAGE_DETAIL) {
+        // Agregar los detalles del pedido en la vista detallada
+        $fields[] = CollectionField::new('detallePedidos', 'Detalles del Pedido')
+            ->setTemplatePath('admin/detalle_pedido.html.twig');
     }
+
+    return $fields;
+}
+
 
     public function configureActions(Actions $actions): Actions
     {
@@ -132,7 +130,6 @@ class PedidoCrudController extends AbstractCrudController
         if ($user instanceof User) {
             $emailService->sendOrderProcessed($user->getEmail(), $user->getNombre(), $pedido);
         }
-
 
         $this->addFlash('success', 'El pedido ha sido procesado correctamente y el usuario ha sido notificado.');
         return $this->redirectToRoute('admin', [

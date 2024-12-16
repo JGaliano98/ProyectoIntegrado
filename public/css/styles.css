@@ -161,10 +161,10 @@ footer {
 /* Estilos para el carrusel */
 .carousel {
     position: relative;
-    top: 220px;
+    top: 195px;
     width: 1000px; /* Ancho fijo para el carrusel */
-    height: 400px; /* Alto fijo para el carrusel */
-    margin: 20px auto 40px; /* Aumenta el margen inferior para crear más espacio debajo del carrusel */
+    height: 500px; /* Alto fijo para el carrusel */
+    margin: 1px auto 250px; /* Incrementa el margen superior e inferior */
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -266,7 +266,7 @@ footer {
 
 .producto-item img {
     max-width: 100%;
-    height: auto;
+    height: 160px;
     margin-bottom: 15px;
 }
 

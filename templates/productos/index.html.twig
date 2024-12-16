@@ -3,83 +3,92 @@
 {% block title %}Productos - Tienda Online{% endblock %}
 
 {% block content %}
-<div class="content-container">
+<div class="contenedor">
     <h1 class="titulo-centrado">Productos Disponibles</h1>
 
-    <!-- Sección de filtros de ordenación -->
-    <div class="filtros-ordenacion">
+    <!-- Botón y campo de búsqueda -->
+    <div class="filtros-buscador-container">
+        <button id="toggle-filtros" class="button-toggle-filtros">
+            Mostrar Filtros
+        </button>
+        <input 
+            type="text" 
+            id="buscador" 
+            placeholder="Buscar producto..." 
+            class="buscador"
+        >
+    </div>
+
+    <!-- Contenedor de los filtros -->
+    <div id="filtros-ordenacion" class="filtros-container" style="display: none;">
         <p>Ordenar por:</p>
         <a href="{{ path('productos', { orden: 'nombre', direccion: 'ASC' }) }}">Nombre A-Z</a> |
         <a href="{{ path('productos', { orden: 'nombre', direccion: 'DESC' }) }}">Nombre Z-A</a> |
         <a href="{{ path('productos', { orden: 'precio', direccion: 'ASC' }) }}">Precio Ascendente</a> |
-        <a href="{{ path('productos', { orden: 'precio', direccion: 'DESC' }) }}">Precio Descendente</a> |
-        <a href="{{ path('productos', { orden: 'categoria' }) }}">Categoría</a>
+        <a href="{{ path('productos', { orden: 'precio', direccion: 'DESC' }) }}">Precio Descendente</a>
     </div>
 
-    <!-- Mostrar productos agrupados por categoría -->
-    {% if ordenarPor == 'categoria' %}
-        {% if categorias is not empty %}
-            {% for categoria in categorias %}
-                <div class="categoria">
-                    <h2 class="categoria-titulo">{{ categoria.nombre }}</h2>
-
-                    {% if categoria.productos is empty %}
-                        <p>No hay productos disponibles en esta categoría.</p>
-                    {% else %}
-                        <div class="productos-container">
-                            {% for producto in categoria.getProductos() %}
-                                <div class="producto-item">
-                                    {% if producto.foto %}
-                                        <img src="{{ asset('uploads/productos/' ~ producto.foto) }}" alt="{{ producto.nombre }}" class="producto-imagen {% if producto.stock == 0 %}sin-stock{% endif %}">
-                                    {% else %}
-                                        <p>No hay imagen disponible</p>
-                                    {% endif %}
-                                    <h3 class="producto-titulo">{{ producto.nombre }}</h3>
-                                    <p>{{ producto.descripcion|raw }}</p>
-                                    <p><strong>Precio: </strong>{{ (producto.precio / 100) | number_format(2, '.', ',') }}€</p>
-
-                                    {% if producto.stock > 0 %}
-                                        <a href="{{ path('carrito_add', { id: producto.id }) }}" class="button add-to-cart">Añadir al Carrito</a>
-                                    {% else %}
-                                        <a class="button add-to-cart sin-stock" disabled>No Disponible</a>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No hay productos disponibles en ninguna categoría.</p>
-        {% endif %}
-    {% else %}
-        <!-- Listar productos ordenados -->
+    <!-- Contenedor de los productos -->
+    <div class="productos-container" id="productos-lista">
         {% if productos is not empty %}
-            <div class="productos-container">
-                {% for producto in productos %}
-                    <div class="producto-item">
-                        {% if producto.foto %}
-                            <img src="{{ asset('uploads/productos/' ~ producto.foto) }}" alt="{{ producto.nombre }}" class="producto-imagen {% if producto.stock == 0 %}sin-stock{% endif %}">
-                        {% else %}
-                            <p>No hay imagen disponible</p>
-                        {% endif %}
-                        <h3 class="producto-titulo">{{ producto.nombre }}</h3>
-                        <p>{{ producto.descripcion|raw }}</p>
-                        <p><strong>Precio: </strong>{{ (producto.precio / 100) | number_format(2, '.', ',') }}€</p>
+            {% for producto in productos %}
+                <div class="producto-item" data-nombre="{{ producto.nombre|lower }}">
+                    {% if producto.foto %}
+                        <img src="{{ asset('uploads/productos/' ~ producto.foto) }}" alt="{{ producto.nombre }}" class="producto-imagen {% if producto.stock == 0 %}sin-stock{% endif %}">
+                    {% else %}
+                        <p>No hay imagen disponible</p>
+                    {% endif %}
+                    <h3 class="producto-titulo">{{ producto.nombre }}</h3>
+                    <p>{{ producto.descripcion|raw }}</p>
+                    <p><strong>Precio: </strong>{{ (producto.precio / 100) | number_format(2, '.', ',') }}€</p>
 
+                    <div class="botones-container">
                         <a href="{{ path('producto_resenas', { id: producto.id }) }}" class="button ver-resenas">Ver Reseñas</a>
-
                         {% if producto.stock > 0 %}
                             <a href="{{ path('carrito_add', { id: producto.id }) }}" class="button add-to-cart">Añadir al Carrito</a>
                         {% else %}
                             <a class="button add-to-cart sin-stock" disabled>No Disponible</a>
                         {% endif %}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
         {% else %}
             <p>No hay productos disponibles.</p>
         {% endif %}
-    {% endif %}
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleButton = document.getElementById('toggle-filtros');
+        const filtros = document.getElementById('filtros-ordenacion');
+        const buscador = document.getElementById('buscador');
+        const productosLista = document.getElementById('productos-lista');
+        const productos = Array.from(productosLista.getElementsByClassName('producto-item'));
+
+        // Mostrar/ocultar filtros
+        toggleButton.addEventListener('click', () => {
+            if (filtros.style.display === 'none') {
+                filtros.style.display = 'block';
+                toggleButton.textContent = 'Ocultar Filtros';
+            } else {
+                filtros.style.display = 'none';
+                toggleButton.textContent = 'Mostrar Filtros';
+            }
+        });
+
+        // Filtro por búsqueda
+        buscador.addEventListener('input', (event) => {
+            const query = event.target.value.toLowerCase();
+            productos.forEach(producto => {
+                const nombre = producto.getAttribute('data-nombre');
+                if (nombre.includes(query)) {
+                    producto.style.display = 'block';
+                } else {
+                    producto.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

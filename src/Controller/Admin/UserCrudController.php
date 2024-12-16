@@ -40,26 +40,26 @@ class UserCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, \EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection $filters): ORMQueryBuilder
     {
         // Obtener el usuario autenticado
-    $user = $this->security->getUser();
+        $user = $this->security->getUser();
 
-    // Verificar si el usuario autenticado es una instancia de la entidad User
-    if (!$user instanceof User) {
-        throw new \Exception('El usuario autenticado no es de la clase User.');
-    }
+        // Verificar si el usuario autenticado es una instancia de la entidad User
+        if (!$user instanceof User) {
+            throw new \Exception('El usuario autenticado no es de la clase User.');
+        }
 
-    // Obtener el query builder por defecto
-    $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        // Obtener el query builder por defecto
+        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
-    // Si el usuario tiene el rol ROLE_ADMIN, puede ver todos los registros
-    if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        // Si el usuario tiene el rol ROLE_ADMIN, puede ver todos los registros
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            return $qb;
+        }
+
+        // Si el usuario no es administrador, filtramos para que solo vea sus propios registros
+        $qb->andWhere('entity.id = :id')
+           ->setParameter('id', $user->getId());
+
         return $qb;
-    }
-
-    // Si el usuario no es administrador, filtramos para que solo vea sus propios registros
-    $qb->andWhere('entity.id = :id')
-       ->setParameter('id', $user->getId());
-
-    return $qb;
     }
 
     public function configureFields(string $pageName): iterable
@@ -107,6 +107,7 @@ class UserCrudController extends AbstractCrudController
             return;
         }
 
+        // Solo hashea y actualiza la contraseña si se proporciona una nueva
         if ($entityInstance->getPlainPassword()) {
             $hashedPassword = $this->passwordHasher->hashPassword($entityInstance, $entityInstance->getPlainPassword());
             $entityInstance->setPassword($hashedPassword);
